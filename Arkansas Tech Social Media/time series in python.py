@@ -12,7 +12,7 @@ from matplotlib.ticker import ScalarFormatter
 # -----------------------------
 # Setup
 # -----------------------------
-DB_PATH = "E:/Send to Katie/All Social Media/social_media.db"
+DB_PATH = "D:/Send to Katie/All Social Media/social_media.db"
 
 # -----------------------------
 # Load Data
@@ -35,7 +35,7 @@ else:
 df = df.set_index('date')
 
 # Select numeric columns only
-numeric_cols = ['Likes', 'Views', 'Shares', 'Follows']  # adjust as needed
+numeric_cols = ['Likes', 'Views', 'Shares']  # adjust as needed
 for col in numeric_cols:
     if col in df.columns:
         df[col] = pd.to_numeric(df[col], errors='coerce')
