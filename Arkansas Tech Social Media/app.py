@@ -1,0 +1,409 @@
+from dash import Dash, html, dcc, dash_table, Input, Output, State
+import sqlite3
+import pandas as pd
+from sklearn.linear_model import LinearRegression
+from sklearn.cluster import KMeans
+from sklearn.ensemble import RandomForestRegressor
+from textblob import TextBlob
+import statsmodels.api as sm
+import plotly.express as px
+import plotly.graph_objects as go
+import nltk
+
+# -----------------------------
+# Setup
+# -----------------------------
+pd.set_option("display.max_colwidth", None)
+nltk.download("stopwords")
+
+DB_PATH = r"D:/Send to Katie/All Social Media/social_media.db"
+
+# -----------------------------
+# Load Data
+# -----------------------------
+conn = sqlite3.connect(DB_PATH)
+df = pd.read_sql_query("SELECT * FROM post", conn)
+conn.close()
+
+# -----------------------------
+# Preprocess
+# -----------------------------
+numeric_cols = ["Likes", "Views", "Shares", "Follows"]
+for col in numeric_cols:
+    df[col] = pd.to_numeric(df[col], errors="coerce")
+
+# Ensure datetime column
+df['Publish time'] = pd.to_datetime(df['Publish time'], errors='coerce')
+df['date'] = df['Publish time'].dt.date
+
+df = df.dropna(subset=numeric_cols + ["Description"])
+df['Post type'] = df['Post type'].fillna("Unknown")
+post_types = df['Post type'].unique().tolist()
+
+# -----------------------------
+# Text Features
+# -----------------------------
+df["Description"] = df["Description"].astype(str)
+df["sentiment"] = df["Description"].apply(lambda x: TextBlob(x).sentiment.polarity)
+df["subjectivity"] = df["Description"].apply(lambda x: TextBlob(x).sentiment.subjectivity)
+df["len_chars"] = df["Description"].apply(len)
+df["len_words"] = df["Description"].apply(lambda x: len(x.split()))
+
+# -----------------------------
+# Clustering
+# -----------------------------
+kmeans = KMeans(n_clusters=4, random_state=42)
+df["cluster"] = kmeans.fit_predict(df[numeric_cols])
+
+# -----------------------------
+# Posting Gap Columns
+# -----------------------------
+df = df.sort_values('Publish time')
+df['days_between_posts'] = df['Publish time'].diff().dt.days.fillna(0)
+df['total_posts_per_row'] = 1
+df['view_like_ratio'] = df.apply(lambda row: row['Views']/row['Likes'] if row['Likes'] > 0 else 0, axis=1)
+
+# -----------------------------
+# Options for Filters
+# -----------------------------
+post_type_options = [{"label": pt, "value": pt} for pt in post_types] or [{"label": "None", "value": "None"}]
+cluster_options = [{"label": str(c), "value": c} for c in sorted(df["cluster"].unique())]
+days_options = [{"label": d, "value": d} for d in ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"]]
+numeric_cols_options = [{"label": c, "value": c} for c in numeric_cols]
+
+# -----------------------------
+# Dash App
+# -----------------------------
+app = Dash(__name__, suppress_callback_exceptions=True)
+
+# Layout
+app.layout = html.Div([
+    html.H1("Social Media Dashboard", style={"textAlign": "center"}),
+    dcc.Tabs([
+
+        # Tab 1: Average Follows
+        dcc.Tab(label="Average Follows", children=[
+            html.Div([
+                html.Label("Select Post Type:"),
+                dcc.RadioItems(id="post-type-buttons", options=post_type_options, value=post_types[0], inline=True),
+                html.H2(id="average-follows-display", style={"textAlign": "center", "color": "blue"}),
+                html.Div(id="corrupted-values-display", style={"marginTop": "20px"})
+            ], style={"margin": "20px"})
+        ]),
+
+        # Tab 2: Regression & Clusters
+        dcc.Tab(label="Regression & Clusters", children=[
+            html.Div([
+                html.Label("Select X-axis:"),
+                dcc.Dropdown(id="x-axis-dropdown", options=numeric_cols_options, value="Likes"),
+                html.Label("Select Y-axis:"),
+                dcc.Dropdown(id="y-axis-dropdown", options=numeric_cols_options, value="Views"),
+                html.Label("Select Graph Type:"),
+                dcc.RadioItems(id="graph-type-buttons",
+                               options=[{"label": "Regression", "value": "regression"},
+                                        {"label": "Cluster", "value": "cluster"}],
+                               value="regression", inline=True),
+                html.Br(),
+                html.Label("Filter by Post Type:"),
+                dcc.RadioItems(id="post-type-filter",
+                               options=[{"label": "All", "value": "All"}] + post_type_options,
+                               value="All", inline=True),
+                html.Label("Gain a Follower:"),
+                dcc.RadioItems(id="gain-follower-filter",
+                               options=[{"label": "All", "value": "All"}, {"label": "Yes", "value": "Gain"}],
+                               value="All", inline=True),
+                html.Label("Select Cluster(s):"),
+                dcc.Dropdown(id="cluster-filter", options=cluster_options, multi=True, placeholder="All clusters"),
+                html.Br(),
+                dcc.Graph(id="dynamic-graph"),
+                html.H3("Data Table"),
+                dash_table.DataTable(id="dynamic-table",
+                                     columns=[{"name": i, "id": i} for i in df.columns],
+                                     page_action="none", filter_action="native", sort_action="native",
+                                     style_table={"overflowX": "auto", "maxHeight": "600px", "overflowY": "scroll"})
+            ], style={"margin": "20px"})
+        ]),
+
+        # Tab 3: Random Forest
+        dcc.Tab(label="Random Forest", children=[
+            html.Div([
+                html.Label("Select Post Type:"),
+                dcc.Dropdown(id="rf-posttype-dropdown",
+                             options=[{"label": "All", "value": "All"}] + post_type_options,
+                             value="All"),
+                html.Br(),
+                html.Label("Select Target Column:"),
+                dcc.Dropdown(id="rf-target-dropdown", options=numeric_cols_options, value="Likes"),
+                html.Br(),
+                dcc.Graph(id="rf-importance-graph")
+            ], style={"margin": "20px"})
+        ]),
+
+        # Tab 4: Text Analysis
+        dcc.Tab(label="Text Analysis", children=[
+            html.H3("Text Features"),
+            html.Div([
+                html.Label("Filter by Minimum Views:"),
+                dcc.Input(id="views-filter-input", type="number", placeholder="Enter min views", style={"marginRight": "20px"}),
+                html.Label("Filter by Minimum Likes:"),
+                dcc.Input(id="likes-filter-input", type="number", placeholder="Enter min likes")
+            ], style={"marginBottom": "10px"}),
+            dash_table.DataTable(id="text-analysis-table",
+                                 columns=[{"name": i, "id": i} for i in ["Description","Permalink"] + numeric_cols + ["sentiment","subjectivity","len_words","len_chars"]],
+                                 data=df.to_dict("records"),
+                                 page_action="none", filter_action="native", sort_action="native",
+                                 style_table={"overflowX": "auto", "maxHeight": "600px", "overflowY": "scroll"}),
+            html.Button("Download Filtered CSV", id="download-text-csv-btn", style={"marginTop": "15px"}),
+            dcc.Download(id="download-text-csv")
+        ]),
+
+        # Tab 5: Time Series
+        dcc.Tab(label="Time Series", children=[
+            html.Div([
+                html.Label("Select Metrics:"),
+                dcc.Checklist(id="ts-metrics-checklist", options=numeric_cols_options, value=["Likes"], inline=True),
+                html.Br(),
+                html.Label("Filter by Post Type:"),
+                dcc.RadioItems(id="ts-post-type-filter", options=[{"label": "All", "value": "All"}] + post_type_options,
+                               value="All", inline=True),
+                html.Label("Gain a Follower:"),
+                dcc.RadioItems(id="ts-gain-follower-filter",
+                               options=[{"label": "All", "value": "All"}, {"label": "Yes", "value": "Gain"}],
+                               value="All", inline=True),
+                html.Br(),
+                dcc.Graph(id="time-series-graph")
+            ], style={"margin": "20px"})
+        ]),
+
+        # Tab 6: Best Time to Post Heatmap
+        dcc.Tab(label="Best Time to Post", children=[
+            html.Div([
+                html.H3("Best Time to Post by Engagement Metric"),
+                html.Label("Select Metric:"),
+                dcc.Dropdown(id="heatmap_metric", options=numeric_cols_options, value="Likes"),
+                html.Br(),
+                html.Label("Filter by Post Type:"),
+                dcc.Dropdown(id="heatmap_posttype", options=[{"label": "All", "value": "All"}] + post_type_options, value="All"),
+                html.Br(),
+                html.Button("Select All Days", id="heatmap_select_all_days", style={"marginBottom": "10px"}),
+                dcc.Checklist(id="heatmap_day_filter", options=days_options, value=[], inline=True),
+                html.Br(),
+                dcc.Graph(id="heatmap_graph"),
+            ], style={"margin": "20px"})
+        ]),
+
+        # Tab 7: Posting Gap Analysis
+        dcc.Tab(label="Posting Gap Analysis", children=[
+            html.Div([
+                html.H3("Days Between Posts Analysis"),
+                html.Label("Filter by Post Type:"),
+                dcc.Dropdown(id="posting-gap-posttype-filter", options=[{"label": "All", "value": "All"}] + post_type_options,
+                             value="All"),
+                html.Br(),
+                html.Label("Select Metric to Visualize:"),
+                dcc.RadioItems(id="posting-gap-metric",
+                               options=[
+                                   {"label": "Views", "value": "Views"},
+                                   {"label": "Likes", "value": "Likes"},
+                                   {"label": "View/Like Ratio", "value": "view_like_ratio"},
+                                   {"label": "Total Posts", "value": "total_posts_per_row"}
+                               ],
+                               value="Views", inline=True),
+                dcc.Graph(id="posting-gap-graph"),
+                html.H3("Number of Posts by Days After Previous Post"),
+                dcc.Graph(id="days-between-post-count-graph")
+            ], style={"margin": "20px"})
+        ])
+
+    ])
+])
+
+# -----------------------------
+# Callbacks
+# -----------------------------
+# Average Follows
+@app.callback(
+    Output("average-follows-display", "children"),
+    Output("corrupted-values-display", "children"),
+    Input("post-type-buttons", "value")
+)
+def update_average(post_type):
+    filtered_df = df[df["Post type"] == post_type]
+    avg_follows = filtered_df["Follows"].mean()
+    avg_text = f"Average Follows for {post_type}: {avg_follows:.2f}"
+    bad_rows = filtered_df[filtered_df["Follows"].isna()]
+    corrupted_text = html.Div([
+        html.H4("Corrupted Follows values found:"),
+        dash_table.DataTable(data=bad_rows.to_dict("records"), page_action="none",
+                             style_table={"overflowX": "auto", "maxHeight": "400px", "overflowY": "scroll"})
+    ]) if not bad_rows.empty else html.Div()
+    return avg_text, corrupted_text
+
+# Dynamic Regression & Clusters
+@app.callback(
+    Output("dynamic-graph", "figure"),
+    Output("dynamic-table", "data"),
+    Input("graph-type-buttons", "value"),
+    Input("x-axis-dropdown", "value"),
+    Input("y-axis-dropdown", "value"),
+    Input("cluster-filter", "value"),
+    Input("post-type-filter", "value"),
+    Input("gain-follower-filter", "value")
+)
+def update_dynamic_graph(graph_type, x_col, y_col, selected_clusters, post_type, gain_filter):
+    filtered_df = df.copy()
+    if selected_clusters:
+        filtered_df = filtered_df[filtered_df["cluster"].isin(selected_clusters)]
+    if post_type != "All":
+        filtered_df = filtered_df[filtered_df["Post type"] == post_type]
+    if gain_filter == "Gain":
+        filtered_df = filtered_df[filtered_df["Follows"] >= 1]
+
+    if graph_type == "regression":
+        pred_frame = sm.OLS(filtered_df[y_col], sm.add_constant(filtered_df[x_col])).fit().get_prediction(sm.add_constant(filtered_df[x_col])).summary_frame(alpha=0.05)
+        fig = px.scatter(filtered_df, x=x_col, y=y_col, hover_data=["Description","Permalink"], title=f"Regression: {y_col} ~ {x_col}")
+        fig.add_scatter(x=filtered_df[x_col], y=pred_frame["mean"], mode="lines", name="OLS Fit", line=dict(color="blue"))
+        fig.add_scatter(x=filtered_df[x_col], y=pred_frame["obs_ci_lower"], mode="lines", name="95% PI Lower", line=dict(color="red", dash="dash"))
+        fig.add_scatter(x=filtered_df[x_col], y=pred_frame["obs_ci_upper"], mode="lines", name="95% PI Upper", line=dict(color="red", dash="dash"))
+    else:
+        fig = px.scatter(filtered_df, x=x_col, y=y_col, color="cluster",
+                         hover_data=["Description","Permalink","sentiment","subjectivity","len_words","len_chars"],
+                         title=f"Cluster: {y_col} vs {x_col}")
+
+    table_data = filtered_df.to_dict("records")
+    return fig, table_data
+
+# Random Forest Importance
+@app.callback(
+    Output("rf-importance-graph", "figure"),
+    Input("rf-target-dropdown", "value"),
+    Input("rf-posttype-dropdown", "value")
+)
+def update_rf_importance(target_col, post_type):
+    filtered_df = df.copy()
+    if post_type != "All":
+        filtered_df = filtered_df[filtered_df["Post type"] == post_type]
+    features = [c for c in numeric_cols if c != target_col]
+    rf = RandomForestRegressor(n_estimators=100, random_state=42)
+    rf.fit(filtered_df[features], filtered_df[target_col])
+    importance_df = pd.DataFrame({"Feature": features, "Importance": rf.feature_importances_}).sort_values("Importance", ascending=False)
+    return px.bar(importance_df, x="Feature", y="Importance", title=f"Random Forest Feature Importance for {target_col} ({'All' if post_type=='All' else post_type})")
+
+# Time Series
+@app.callback(
+    Output("time-series-graph", "figure"),
+    Input("ts-metrics-checklist", "value"),
+    Input("ts-post-type-filter", "value"),
+    Input("ts-gain-follower-filter", "value")
+)
+def update_time_series(metrics, post_type, gain_filter):
+    filtered_df = df.copy()
+    if post_type != "All":
+        filtered_df = filtered_df[filtered_df["Post type"] == post_type]
+    if gain_filter == "Gain":
+        filtered_df = filtered_df[filtered_df["Follows"] >= 1]
+    filtered_df = filtered_df.sort_values("Publish time")
+    fig = go.Figure()
+    for metric in metrics:
+        fig.add_trace(go.Scatter(x=filtered_df["Publish time"], y=filtered_df[metric], mode="lines+markers", name=metric))
+        fig.add_trace(go.Scatter(x=filtered_df["Publish time"], y=filtered_df[metric].rolling(7).mean(), mode="lines", name=f"{metric} 7-day Avg", line=dict(dash="dash")))
+    fig.update_layout(title="Time Series of Social Media Metrics", xaxis_title="Date", yaxis_title="Count", xaxis=dict(tickformat="%b %d, %Y"))
+    return fig
+
+# Text Analysis Filter & Download
+@app.callback(
+    Output("text-analysis-table", "data"),
+    Input("views-filter-input", "value"),
+    Input("likes-filter-input", "value")
+)
+def filter_text_analysis(min_views, min_likes):
+    filtered_df = df.copy()
+    if min_views is not None:
+        filtered_df = filtered_df[filtered_df["Views"] >= min_views]
+    if min_likes is not None:
+        filtered_df = filtered_df[filtered_df["Likes"] >= min_likes]
+    return filtered_df.to_dict("records")
+
+@app.callback(
+    Output("download-text-csv", "data"),
+    Input("download-text-csv-btn", "n_clicks"),
+    State("views-filter-input", "value"),
+    State("likes-filter-input", "value"),
+    prevent_initial_call=True
+)
+def download_text_file(n_clicks, min_views, min_likes):
+    filtered_df = df.copy()
+    if min_views is not None:
+        filtered_df = filtered_df[filtered_df["Views"] >= min_views]
+    if min_likes is not None:
+        filtered_df = filtered_df[filtered_df["Likes"] >= min_likes]
+    cols = ["Description"] + [c for c in filtered_df.columns if c != "Description"]
+    filtered_df = filtered_df[cols]
+    return dcc.send_data_frame(filtered_df.to_csv, "text_analysis_filtered.csv", index=False)
+
+# Heatmap Select All Days
+@app.callback(
+    Output("heatmap_day_filter", "value"),
+    Input("heatmap_select_all_days", "n_clicks"),
+    prevent_initial_call=True
+)
+def select_all_days(n):
+    return [d['value'] for d in days_options]
+
+# Heatmap Graph
+@app.callback(
+    Output("heatmap_graph", "figure"),
+    Input("heatmap_metric", "value"),
+    Input("heatmap_posttype", "value"),
+    Input("heatmap_day_filter", "value")
+)
+def update_heatmap(metric, post_type, selected_days):
+    dff = df.copy()
+    if post_type != "All":
+        dff = dff[dff["Post type"] == post_type]
+    dff["post_time"] = dff["Publish time"].dt.hour
+    dff["post_day"] = dff["Publish time"].dt.day_name()
+    if selected_days:
+        dff = dff[dff["post_day"].isin(selected_days)]
+    pivot = dff.groupby(["post_day", "post_time"])[metric].mean().reset_index()
+    fig = px.density_heatmap(pivot, x="post_time", y="post_day", z=metric, color_continuous_scale=["blue","green","yellow","red"], nbinsx=24, title=f"Best Time to Post for {metric}")
+    fig.update_layout(xaxis_title="Hour of Day (0-23)", yaxis_title="Day of Week", coloraxis_colorbar=dict(title=f"Avg {metric}"))
+    return fig
+
+# Posting Gap Analysis Graphs
+@app.callback(
+    Output("posting-gap-graph", "figure"),
+    Input("posting-gap-metric", "value"),
+    Input("posting-gap-posttype-filter", "value")
+)
+def update_posting_gap_graph(metric, post_type):
+    dff = df.copy()
+    if post_type != "All":
+        dff = dff[dff["Post type"] == post_type]
+    dff = dff.sort_values("Publish time")
+    dff['days_between_posts'] = dff['Publish time'].diff().dt.days.fillna(0)
+    summary = dff.groupby('days_between_posts', as_index=False).agg({
+        'total_posts_per_row': 'sum', 'Views': 'mean', 'Likes': 'mean', 'view_like_ratio': 'mean'
+    })
+    return px.line(summary, x='days_between_posts', y=metric, markers=True, title=f"{metric} vs Days After Previous Post", labels={'days_between_posts': 'Days After Previous Post', metric: metric})
+
+@app.callback(
+    Output("days-between-post-count-graph", "figure"),
+    Input("posting-gap-posttype-filter", "value")
+)
+def update_days_between_post_count(post_type):
+    dff = df.copy()
+    if post_type != "All":
+        dff = dff[dff["Post type"] == post_type]
+    dff = dff.sort_values("Publish time")
+    dff['days_between_posts'] = dff['Publish time'].diff().dt.days.fillna(0)
+    counts = dff['days_between_posts'].value_counts().reset_index()
+    counts.columns = ['Days After Previous Post', 'Number of Posts']
+    counts = counts.sort_values('Days After Previous Post')
+    return px.bar(counts, x='Days After Previous Post', y='Number of Posts', text='Number of Posts', title="Number of Posts by Days After Previous Post")
+
+# -----------------------------
+# Run App
+# -----------------------------
+if __name__ == "__main__":
+    app.run(debug=True, host="127.0.0.1", port=8052)
