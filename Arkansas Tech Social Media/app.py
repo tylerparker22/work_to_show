@@ -16,7 +16,7 @@ import nltk
 pd.set_option("display.max_colwidth", None)
 nltk.download("stopwords")
 
-DB_PATH = r"D:/Send to Katie/All Social Media/social_media.db"
+DB_PATH = r"C:/Users/tyler/OneDrive/Documents/GitHub/work_to_show/Arkansas Tech Social Media/social_media.db"
 
 # -----------------------------
 # Load Data
