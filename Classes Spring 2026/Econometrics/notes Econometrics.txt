@@ -1,0 +1,26 @@
+notes Econometrics: 
+
+1/14/26: 
+
+Ordinary least squares (OLS):
+ordinary: nothing fancy
+least: minimized
+squares: means squares of errors
+
+difference between act values and predicted values are errors
+
+error is the diff between act y and predicted y. (can be +-)
+
+best fit line is the line the min the sum of these errors squared. 
+
+OLS is also called linear regiession
+
+pred y  y=a+b*x
+
+error squared  (y-predicted y)^2
+
+sum of square error  (sum of all error squared)
+
+SOLVER:
+
+OBJ: SUM OF SQ ERROR, MIN (FIND INTERCEPT), CHANGING INTERCEPT AND SLOPE

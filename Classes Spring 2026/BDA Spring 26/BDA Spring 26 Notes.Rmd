@@ -1,0 +1,86 @@
+---
+title: "BDA Spring 26 Notes"
+output: html_notebook
+---
+
+## EDA in R (Full Script)
+
+```{r}
+# EDA in R (full script)
+project_csv <-read.csv("C:/Users/tyler/OneDrive/Documents/GitHub/Classes Spring 2026/BDA Spring 26/project.csv",header=TRUE) # FORWARD SLASH AND HEADER TRUE IF HAVE COLUMN NAMES
+# column names
+colnames(project_csv)
+#head of the data
+head(project_csv)
+#summary of the days_duration column
+summary(project_csv$days_duration)
+#summary of the project_csv_cost column
+summary(project_csv$project_csv_cost)
+# mean of columns
+mean(project_csv$days_duration)
+mean(project_csv$project_csv_cost)
+# stand dev of columns
+sd(project_csv$days_duration)
+sd(project_csv$project_csv_cost)
+# finding the regression line 
+mean(project_csv$days_duration)+3*sd(project_csv$days_duration)
+mean(project_csv$days_duration)-3*sd(project_csv$days_duration)
+mean(project_csv$project_csv_cost)+3*sd(project_csv$project_csv_cost)
+mean(project_csv$project_csv_cost)-3*sd(project_csv$project_csv_cost)
+#histogram
+hist(project_csv$days_duration)
+hist(project_csv$project_cost)
+#plot with ab line
+plot(project_csv$days_duration,type="b")
+abline(h=mean(project_csv$days_duration))
+plot(project_csv$project_cost,type="b")
+abline(h=mean(project_csv$project_csv_cost))
+#correlation
+cor(project_csv$days_duration,project_csv$project_cost)
+plot(project_csv$days_duration,project_csv$project_cost)
+```
+
+## dataForEDA
+```{r}
+EDA <-read.csv ("C:/Users/tyler/OneDrive/Documents/GitHub/Classes Spring 2026/BDA Spring 26/dataForEDA.csv", header=TRUE)
+#head of data
+head(EDA)
+#summary of data
+summary(EDA)
+#mean of data 
+mean(EDA$W)
+# stand dev data
+sd(EDA$W)
+sd(EDA$Y)
+sd(EDA$X)
+sd(EDA$Z)
+#mean of data
+mean(EDA$X)
+mean(EDA$Y)
+mean(EDA$Z)
+#correlation of data
+cor(EDA)
+#histogram 
+hist(EDA$W)
+hist(EDA$X)
+hist(EDA$Y)
+hist(EDA$Z)
+# line plot of data
+plot(EDA$W,type="b")
+abline(h=mean(EDA$W))
+plot(EDA$X,type="b")
+plot(EDA$Y,type="b")
+plot(EDA$Z,type="b")
+# scatter plot of data
+plot(EDA$W,EDA$X)
+plot(EDA$W,EDA$Y)
+plot(EDA$W,EDA$Z)
+plot(EDA$X,EDA$Y)
+plot(EDA$X,EDA$Z)
+plot(EDA$Y,EDA$Z)
+```
+## chunk name
+```{r}
+
+```
+

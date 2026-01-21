@@ -1,0 +1,80 @@
+---
+title: "Retail EDA Practice"
+output: html_notebook
+---
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Ctrl+Shift+Enter*. 
+
+## read the data frame
+```{r}
+df <-read.csv ("D:/ATU Stuff/Notes/BDA Spring 26/Retail EDA.csv", header=TRUE)
+```
+## head of data
+```{r}
+#head of data
+head(df)
+```
+## column names
+```{r}
+# column names
+colnames(df) # "Day" "Coke2Liter" "Advil30CntGel" "BountyPaperTowel2pk" "IvorySoap6pk"
+```
+## summary of data
+```{r}
+# summary of data
+summary(df)
+```
+      Day           Coke2Liter    Advil30CntGel   BountyPaperTowel2pk
+ Min.   :  1.00   Min.   :14.86   Min.   : 7.50   Min.   :29.74      
+ 1st Qu.: 75.25   1st Qu.:26.58   1st Qu.:15.46   1st Qu.:46.99      
+ Median :149.50   Median :30.47   Median :18.11   Median :53.40      
+ Mean   :149.50   Mean   :30.18   Mean   :18.04   Mean   :53.67      
+ 3rd Qu.:223.75   3rd Qu.:33.60   3rd Qu.:20.62   3rd Qu.:59.62      
+ Max.   :298.00   Max.   :41.35   Max.   :27.20   Max.   :97.04      
+  IvorySoap6pk  
+ Min.   :17.75  
+ 1st Qu.:35.35  
+ Median :41.87  
+ Mean   :41.78  
+ 3rd Qu.:47.80  
+ Max.   :70.86
+
+## histograms
+```{r}
+#histogram 
+hist(df$Day)
+hist(df$Coke2Liter)
+hist(df$Advil30CntGel)
+hist(df$BountyPaperTowel2pk)
+hist(df$IvorySoap6pk)
+```
+## run chart
+```{r}
+# line plot of data
+plot(df$Day,type="b")
+abline(h=mean(df$Day))
+plot(df$Coke2Liter,type="b")
+plot(df$Advil30CntGel,type="b")
+plot(df$BountyPaperTowel2pk,type="b")
+plot(df$IvorySoap6pk,type="b")
+```
+## scatter plots
+```{r}
+# scatter plots
+plot(df$Day, df$Coke2Liter)
+plot(df$Day, df$Advil30CntGel)
+plot(df$Day, df$BountyPaperTowel2pk)
+plot(df$Day, df$IvorySoap6pk)
+plot(df$Coke2Liter, df$Advil30CntGel)
+plot(df$Coke2Liter, df$BountyPaperTowel2pk)
+plot(df$Coke2Liter, df$IvorySoap6pk)
+plot(df$Advil30CntGel, df$BountyPaperTowel2pk)
+plot(df$Advil30CntGel, df$IvorySoap6pk)
+plot(df$BountyPaperTowel2pk, df$IvorySoap6pk)
+```
+## issues
+- day hist tend goes down closer to 300
+- BountyPaperTowel2pk outlier
+- 
