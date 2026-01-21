@@ -7,7 +7,7 @@ output: html_notebook
 
 ```{r}
 # EDA in R (full script)
-project_csv <-read.csv("C:/Users/tyler/OneDrive/Documents/GitHub/Classes Spring 2026/BDA Spring 26/project.csv",header=TRUE) # FORWARD SLASH AND HEADER TRUE IF HAVE COLUMN NAMES
+project_csv <-read.csv("//sdata/susers/tparker27/My Documents/GitHub/work_to_show/Classes Spring 2026/BDA Spring 26/project.csv",header=TRUE) # FORWARD SLASH AND HEADER TRUE IF HAVE COLUMN NAMES
 # column names
 colnames(project_csv)
 #head of the data
