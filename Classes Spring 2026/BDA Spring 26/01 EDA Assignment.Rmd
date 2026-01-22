@@ -1,0 +1,76 @@
+---
+title: "01 EDA Assignment"
+output: html_notebook
+---
+The file "student data for EDA.csv" contains exam, homework, and project scores for 119
+students. 
+-Using R perform exploratory data analysis. 
+-Calculate summary statistics for the data (min, max, mean, standard deviation). 
+-Create histograms, 
+-run (line) charts, and 
+-scatter plots for each column (exam, homework, and project). 
+-Clearly, identify any potential information quality issues in the data and provide the output the identified the issue. 
+-Include your R and SAS programs.
+
+## load data
+```{r}
+df <-read.csv("C:/Users/tyler/OneDrive/Documents/GitHub/work_to_show/Classes Spring 2026/BDA Spring 26/student data for EDA.csv",header=TRUE) # FORWARD SLASH AND HEADER TRUE IF HAVE COLUMN NAMES
+View(df)
+```
+
+## column names
+```{r}
+# column names
+colnames(df) # "Student"  "Exam"     "Homework" "Project" 
+#head of the data
+head(df)
+```
+
+## summary stats
+```{r}
+
+summary(df)
+"    Student           Exam          Homework         Project      
+ Min.   :  1.0   Min.   :30.82   Min.   :-77.73   Min.   : 29.56  
+ 1st Qu.: 30.5   1st Qu.:66.14   1st Qu.: 73.03   1st Qu.: 73.34  
+ Median : 60.0   Median :79.39   Median : 88.34   Median : 87.18  
+ Mean   : 60.0   Mean   :75.65   Mean   : 80.80   Mean   : 82.17  
+ 3rd Qu.: 89.5   3rd Qu.:90.19   3rd Qu.:100.00   3rd Qu.: 99.17  
+ Max.   :119.0   Max.   :99.40   Max.   :100.00   Max.   :100.00"
+sd(df$Exam) # 18.20467
+sd(df$Homework) # 23.82734
+sd(df$Project) # 18.30348
+
+```
+
+## histogram
+```{r}
+hist(df$Exam)
+hist(df$Homework) # error on homework 1 value <0
+hist(df$Project) 
+```
+
+## run chart
+```{r}
+#plot with ab line
+plot(df$Exam,type="b")
+abline(h=mean(df$Exam_grade))
+plot(df$Homework,type="b") # Value <0
+abline(h=mean(df$Homework_grade))
+plot(df$Project,type="b")
+abline(h=mean(df$Project_grade))
+```
+## scatter plot
+```{r}
+# "Student"  "Exam"     "Homework" "Project" 
+#correlation
+cor(df$Exam,df$Homework)
+plot(df$Exam,df$Homework)
+cor(df$Homework,df$Project) # NOTE: Entry error on homework
+plot(df$Homework,df$Project)
+cor(df$Exam,df$Project)
+plot(df$Exam,df$Project)
+```
+
+
+

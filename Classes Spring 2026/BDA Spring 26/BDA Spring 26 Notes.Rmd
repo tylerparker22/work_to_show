@@ -79,8 +79,46 @@ plot(EDA$X,EDA$Y)
 plot(EDA$X,EDA$Z)
 plot(EDA$Y,EDA$Z)
 ```
-## chunk name
+## 01 EDA Assignment
 ```{r}
+df <-read.csv("C:/Users/tyler/OneDrive/Documents/GitHub/work_to_show/Classes Spring 2026/BDA Spring 26/student data for EDA.csv",header=TRUE) # FORWARD SLASH AND HEADER TRUE IF HAVE COLUMN NAMES
+View(df)
 
+# column names
+colnames(df) # "Student"  "Exam"     "Homework" "Project" 
+#head of the data
+head(df)
+
+summary(df)
+"    Student           Exam          Homework         Project      
+ Min.   :  1.0   Min.   :30.82   Min.   :-77.73   Min.   : 29.56  
+ 1st Qu.: 30.5   1st Qu.:66.14   1st Qu.: 73.03   1st Qu.: 73.34  
+ Median : 60.0   Median :79.39   Median : 88.34   Median : 87.18  
+ Mean   : 60.0   Mean   :75.65   Mean   : 80.80   Mean   : 82.17  
+ 3rd Qu.: 89.5   3rd Qu.:90.19   3rd Qu.:100.00   3rd Qu.: 99.17  
+ Max.   :119.0   Max.   :99.40   Max.   :100.00   Max.   :100.00"
+sd(df$Exam) # ANSWER: 18.20467
+sd(df$Homework) # ANSWER: 23.82734
+sd(df$Project) # ANSWER: 18.30348
+
+hist(df$Exam)
+hist(df$Homework) # NOTE: Entry error on homework VALUE IS -77.73
+hist(df$Project)
+
+#plot with ab line
+plot(df$Exam,type="b")
+abline(h=mean(df$Exam_grade))
+plot(df$Homework,type="b") # NOTE: Entry error on homework -77.73
+abline(h=mean(df$Homework_grade))
+plot(df$Project,type="b")
+abline(h=mean(df$Project_grade))
+
+#correlation
+cor(df$Exam,df$Homework)
+plot(df$Exam,df$Homework)
+cor(df$Homework,df$Project) # NOTE: Entry error on homework -77.73
+plot(df$Homework,df$Project)
+cor(df$Exam,df$Project)
+plot(df$Exam,df$Project)
 ```
 
