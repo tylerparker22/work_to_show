@@ -7,26 +7,26 @@ output: html_notebook
 
 ```{r}
 # EDA in R (full script)
-project_csv <-read.csv("C:/Users/tyler/OneDrive/Documents/GitHub/Classes Spring 2026/BDA Spring 26/project.csv",header=TRUE) # FORWARD SLASH AND HEADER TRUE IF HAVE COLUMN NAMES
+project_csv <-read.csv("C:/Users/tyler/OneDrive/Documents/GitHub/work_to_show/Classes Spring 2026/BDA Spring 26/project.csv",header=TRUE) # FORWARD SLASH AND HEADER TRUE IF HAVE COLUMN NAMES
 # column names
-colnames(project_csv)
+colnames(project_csv) # "days_duration" "project_cost" 
 #head of the data
 head(project_csv)
 #summary of the days_duration column
 summary(project_csv$days_duration)
-#summary of the project_csv_cost column
-summary(project_csv$project_csv_cost)
+#summary of the project_cost column
+summary(project_csv$project_cost)
 # mean of columns
 mean(project_csv$days_duration)
-mean(project_csv$project_csv_cost)
+mean(project_csv$project_cost)
 # stand dev of columns
 sd(project_csv$days_duration)
-sd(project_csv$project_csv_cost)
+sd(project_csv$project_cost)
 # finding the regression line 
 mean(project_csv$days_duration)+3*sd(project_csv$days_duration)
 mean(project_csv$days_duration)-3*sd(project_csv$days_duration)
-mean(project_csv$project_csv_cost)+3*sd(project_csv$project_csv_cost)
-mean(project_csv$project_csv_cost)-3*sd(project_csv$project_csv_cost)
+mean(project_csv$project_cost)+3*sd(project_csv$project_cost)
+mean(project_csv$project_cost)-3*sd(project_csv$project_cost)
 #histogram
 hist(project_csv$days_duration)
 hist(project_csv$project_cost)
@@ -34,7 +34,7 @@ hist(project_csv$project_cost)
 plot(project_csv$days_duration,type="b")
 abline(h=mean(project_csv$days_duration))
 plot(project_csv$project_cost,type="b")
-abline(h=mean(project_csv$project_csv_cost))
+abline(h=mean(project_csv$project_cost))
 #correlation
 cor(project_csv$days_duration,project_csv$project_cost)
 plot(project_csv$days_duration,project_csv$project_cost)
