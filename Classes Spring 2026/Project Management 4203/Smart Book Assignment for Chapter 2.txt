@@ -1,0 +1,171 @@
+How a project manager responds to project delays should be based on the impact on strategic concerns.
+Answer: True
+Identify the assumptions made in the integration of projects with strategic plans.
+Answer:
+- A process for prioritizing projects by their contribution to the plan
+- Existence of a strategic plan
+What are the major dimensions of strategic management?
+Answer:
+- Responding to changes in the external market
+- Allocating scarce resources of the firm
+What is required to implement a "strategy"?
+Answer: Actions and tasks
+Place the following activities of the strategic management process in the correct order of occurrence.
+Answer:
+1. Review and define the organizational mission
+2. Analyze and formulate strategies
+3. Set objectives to achieve strategies
+4. Implement strategies through projects
+What are the main reasons project managers need to understand an organization's mission and strategy?
+Answer:
+- To allow appropriate decision making
+- To be an effective project advocate
+It is critical to establish the company mission as the first step in strategic management process because the mission statement for the company _____
+Answer: identifies "what they want to become."
+______ management is the process of assessing “what we are” and deciding and implementing “what we intend to be and how we are going to get there.”
+Answer: Strategic
+Strategic management positions the organization to meet the needs and requirements of its customers for the short term
+Answer: False
+The assessment of the external and internal environments is known as the _____ analysis.
+Answer: SWOT
+One of the four activities of the strategic management process is to analyze and formulate _____.
+Answer: strategies
+Identify the assumptions made in the integration of projects with strategic plans.
+Answer:
+- A process for prioritizing projects by their contribution to the plan
+- Existence of a strategic plan
+Mission statements should be written and communicated to organizational managers and other employees in order to:
+Answer: Provide a focal point for decision making.
+Which of the following is NOT important in establishing a proper objective?
+Answer: Make sure there is a project payback.
+What are the major dimensions of strategic management?
+Answer:
+- Allocating scarce resources of the firm
+- Responding to changes in the external market
+Doran (1981) created the SMART memory device to help write objectives. The R stands for _____.
+Answer: realistic
+Identify the second step in strategy formulation.
+Answer: Assess the internal and external environments.
+All managers realize that without _____, success is impossible.
+Answer: implementation
+Implementation of projects without a strong priority system linked to strategy creates problems. Which of the following are some of those problems?
+Answer:
+- Organization politics
+- The implementation gap
+- Resource conflicts and multitasking
+Organizational _____ drive projects.
+Answer: strategy
+The selection process is the first part of the management system that spans the lifetime of the project. This system has been described as a series of _____ that a project must pass through in order to be completed.
+Answer: gates
+Doran (1981) created the SMART memory device to help write objectives. The S stands for _____.
+Answer: specific
+Which of the following are typically identified as the selection criteria?
+Answer:
+- Financial
+- Nonfinancial
+Task completion requires _____.
+Answer: resources
+A ______ driven project portfolio system can reduce or eliminate the impact of problems in project implementation.
+Answer: priority
+Many organizations find they have three basic kinds of projects in their portfolio. Which of the following is not one of those three?
+Answer: Sacred cows
+For a hypothetical company, projects that cost $1,000,000 to implement must have a payback not longer than 4 years. Which of the following annual project cost savings would be acceptable?
+Answer: $300,000
+Place the six phases of the phase gate model in the correct sequence.
+Answer:
+1. Idea
+2. Proposal
+3. Screening and selection
+4. Implementation plan
+5. Progress evaluation
+6. Closure
+Which of the following is not used to calculate NPV?
+Answer: Payback period
+Which of the following statements is true of selection criteria for projects?
+Answer: They are typically identified as financial and nonfinancial.
+1. Identify the steps necessary to implement strategies through projects:
+- Determine and allocate available resources ✅
+- Establish a planning and control system ✅
+- Establish a corporate organization that complements the strategy ✅
+- Implement multiple objectives at the same time ❌
+
+2. Financial return, while important, does not always reflect ___ importance:
+- Answer: strategic ✅
+
+3. Implementation of projects without a strong priority system linked to strategy creates problems:
+- Resource conflicts and multitasking ✅
+- The implementation gap ✅
+- Organization politics ✅
+- Lower ROI on individual projects ❌
+- Projects that take longer than expected ❌
+
+4. The simplest and most widely used model for evaluating projects:
+- Answer: Payback ✅
+
+5. Negative NPVs are desirable:
+- Answer: False ✅
+
+6. The ___ approach basically uses a list of questions to review potential projects:
+- Answer: Checklist ✅
+
+7. Typically identified selection criteria:
+- Financial ✅
+- Nonfinancial ✅
+- Payback period ❌
+- Duration ❌
+
+8. Why include multiple non-financial criteria in a screening model:
+- Answer: To avoid focusing only on profitable projects, which can lead to overextension ✅
+
+9. ___ scoring models generally include qualitative and/or quantitative criteria:
+- Answer: Weighted ✅
+
+10. A ___ driven project portfolio system can reduce or eliminate implementation problems:
+- Answer: Priority ✅
+
+11. Payback period is typically measured in:
+- Answer: Years ✅
+
+12. Project proposals should be classified by ___ so the appropriate criteria can be used:
+- Answer: Type ✅
+
+13. Primary drawbacks of using a checklist model:
+- Leaves the door open for power plays ✅
+- Difficult to compare multiple projects ✅
+- Cannot be used across different divisions ❌
+
+14. Restricting project proposals from certain groups:
+- Opportunities may be missed ✅
+
+15. Most important criterion for project selection:
+- Project's fit to the organization's strategy ✅
+
+16. Key benefits of soliciting project proposals from internal and external stakeholders:
+- A Request for Proposal (RFP) can be used to take a concept and ask an outside company to develop the project ✅
+- Good ideas are not limited to just upper management ✅
+- Encouraging competition ❌
+
+17. Critical needs of a company utilizing a strategic project portfolio system:
+- Getting input from senior management ✅
+- Involving a team of people rather than just an individual ✅
+- Establishing a common financial goal ❌
+- Utilizing only financial selection criteria ❌
+
+18. In ranking strategic project proposals, if a project does not meet designated "___" objectives, it is removed:
+- Answer: Must ✅
+
+19. Upper management should be responsible for prioritizing projects:
+- Answer: Upper ✅
+
+20. Managing the ___ takes the selection system one step higher:
+- Answer: Portfolio ✅
+
+21. Role of the sponsor in ranking and selecting strategic projects:
+- Answer: The sponsor decides whether to pursue a project based on its value to the organization ✅
+
+22. In ranking project proposals, which is NOT true:
+- Projects categorized as "wants" get first priority ✅
+
+23. Corrected critical needs of a company using a strategic project portfolio system:
+- Getting input from senior management ✅
+- Involving a team rather than just an individual ✅
