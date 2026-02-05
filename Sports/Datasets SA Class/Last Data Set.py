@@ -1,3 +1,4 @@
+# 3.13.7 python works
 # %% import data
 import pandas as pd
 df=pd.read_csv("C:/Users/tyler/OneDrive/Documents/GitHub/work_to_show/Sports/Datasets SA Class/SBR001-715.csv")
@@ -55,18 +56,18 @@ print(f"Original dataset size: {len(df)}")
 # Remove rows where Target column is NaN
 df_clean = df_clean.dropna(subset=[TARGET_COL])
 print(f"Dataset size after removing NaN in '{TARGET_COL}': {len(df_clean)}")
-print(f"Removed {len(df) - len(df_clean)} rows with NaN values\n")
+print(f"Removed {len(df) - len(df_clean)} rows with NaN values/n")
 
 # Get unique items
 unique_items = df_clean['Item'].unique()
-print(f"Number of unique items: {len(unique_items)}\n")
+print(f"Number of unique items: {len(unique_items)}/n")
 
 # Store results
 results = []
 
 # Loop through each unique item
 for item in unique_items:
-    print(f"\n{'='*60}")
+    print(f"/n{'='*60}")
     print(f"Processing Item: {item}")
     print(f"{'='*60}")
     
@@ -124,7 +125,7 @@ for item in unique_items:
 results_df = pd.DataFrame(results)
 results_df = results_df.sort_values('Test_R2', ascending=False)
 
-print("\n" + "="*60)
+print("/n" + "="*60)
 print("SUMMARY RESULTS - Sorted by Test R²")
 print("="*60)
 print(results_df.to_string(index=False))
@@ -162,7 +163,7 @@ plt.show()
 
 # Save results to CSV
 results_df.to_csv('feature_importance_by_item.csv', index=False)
-print("\nResults saved to 'feature_importance_by_item.csv'")
+print("/nResults saved to 'feature_importance_by_item.csv'")
 
 
 
@@ -172,18 +173,59 @@ print("\nResults saved to 'feature_importance_by_item.csv'")
 df=df_clean
 
 # %% target graphed over time
-data1='Total Number of Fans Age 13+ (View and/or Attend - add ,000)'
-data2='Year'
 import matplotlib
 matplotlib.use("Agg")
 import numpy as np
 import matplotlib.pyplot as plt
+
+# Define the items you want to plot (these are row names in the 'Item' column)
+data1 = 'Total Number of Fans Age 13+ (View and/or Attend - add ,000)'
+data2 = 'Year'  # Replace this with an actual Item name from your data
+
+# Filter data for each item
+item1_data = df_clean[df_clean['Item'] == data1].copy().sort_values('Year')
+item2_data = df_clean[df_clean['Item'] == data2].copy().sort_values('Year')
+
+# Create figure
 fig = plt.figure()
 ax = fig.add_subplot()
-df = np.random.standard_normal(30).cumsum()
-ax.plot(df[data1], color="black", linestyle="dashed", label="Default");
-ax.plot(df[data2], color="black", linestyle="dashed",
-        drawstyle="steps-post", label="steps-post");
+
+# Plot both items
+ax.plot(item1_data['Year'], item1_data['Value'], color="black", 
+        linestyle="dashed", marker='o', label=data1)
+ax.plot(item2_data['Year'], item2_data['Value'], color="blue", 
+        linestyle="dashed", marker='s', label=data2)
+
+ax.set_xlabel('Year')
+ax.set_ylabel('Value')
+ax.set_title('Comparison Over Time')
+ax.legend()
+ax.grid(True, alpha=0.3)
+
+# Save to a specific location
+save_path = r"C:/Users/tyler/OneDrive/Documents/GitHub/work_to_show/Random_Plots/lds.png"
+plt.savefig(save_path, dpi=300, bbox_inches="tight")  # ADD THIS LINE
+plt.close()
+print(f"Plot saved to: {save_path}")
+
+# %% Time sereis
+# MAKE SURE THIS GOES AT THE TOP OF EVERY PLOT
+import matplotlib
+matplotlib.use("Agg")
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+column = 'Total Number of Fans Age 13+ (View and/or Attend - add ,000)'
+
+fig = plt.figure()
+ax = fig.add_subplot()
+
+ax.plot(df[column], linestyle="dashed", label="Default")
 ax.legend()
 
-# %% 
+# IMPORTANT when using Agg:
+plt.savefig("fans_plot.png", dpi=300, bbox_inches="tight")
+plt.close()
+
+# %%

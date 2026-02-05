@@ -34,35 +34,18 @@ ttest_act<-read.csv("C:/Users/tyler/OneDrive/Documents/GitHub/work_to_show/Class
 ttest_bp<-read.csv("C:/Users/tyler/OneDrive/Documents/GitHub/work_to_show/Classes Spring 2026/BDA Spring 26/Datasets/ttest bp.csv")
 ttest_newprod<-read.csv("C:/Users/tyler/OneDrive/Documents/GitHub/work_to_show/Classes Spring 2026/BDA Spring 26/Datasets/ttest newproduct.csv")
 
-# %%
+# %% View Data Sets
 View(ttest_act)
+colnames(ttest_act) # "student"  "ACTScore"
 View(ttest_bp)
+colnames(ttest_bp) # "patient" "before"  "after"
 View(ttest_newprod)
-# %% t-test template
-t.test(file_name$col_name,mu=6) #default value
-# Two Sample t-test, variances assumed unequal
-t.test(Col1 ~ Col2, data = df)
-# Two Sample t-test, variances assumed equal
-t.test(col1 ~ col2, data = df,var.equal = TRUE)
-# paired t test
-t.test(df$col1, df$col2, paired = TRUE)
+colnames(ttest_newprod) # "CustomerID" "Product"    "Rating"
 
-# power
-# to calc power
-power.t.test(n = 30,
-    delta = .7,
-    sd = 0.9,
-    sig.level = 0.05,
-    type = "two.sample",
-    alternative = "two.sided")
+# %% Use a two-tailed test (the default) for all three tests
+t.test(ttest_act$ACTScore,mu=6)
+t.test(ttest_bp$before,mu=6)
+t.test(ttest_bp$after,mu=6)
+t.test(ttest_newprod$Rating,mu=6)
 
-# calc sample size
-power.t.test(n = NULL,
-    delta = .7,
-    sd = 0.9,
-    sig.level = 0.05,
-    power=.8,
-    type = "two.sample",
-    alternative = "two.sided")
-
-# %% what is the 
+# %% Hypothesis test for every data set
