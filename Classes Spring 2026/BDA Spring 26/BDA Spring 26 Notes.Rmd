@@ -3,11 +3,9 @@ title: "BDA Spring 26 Notes"
 output: html_notebook
 ---
 
-## EDA in R (Full Script)
-
-```{r}
-# EDA in R (full script)
-project_csv <-read.csv("C:/Users/tyler/OneDrive/Documents/GitHub/work_to_show/Classes Spring 2026/BDA Spring 26/project.csv",header=TRUE) # FORWARD SLASH AND HEADER TRUE IF HAVE COLUMN NAMES
+# EDA in R (Full Script)
+```{r EDA in R (full script), echo=TRUE, message=TRUE, warning=TRUE, paged.print=TRUE}
+project_csv <-read.csv("C:/Users/tyler/OneDrive/Documents/GitHub/work_to_show/Classes Spring 2026/BDA Spring 26/Datasets/project.csv",header=TRUE) # FORWARD SLASH AND HEADER TRUE IF HAVE COLUMN NAMES
 # column names
 colnames(project_csv) # "days_duration" "project_cost" 
 #head of the data
@@ -40,9 +38,9 @@ cor(project_csv$days_duration,project_csv$project_cost)
 plot(project_csv$days_duration,project_csv$project_cost)
 ```
 
-## dataForEDA
-```{r}
-EDA <-read.csv ("C:/Users/tyler/OneDrive/Documents/GitHub/Classes Spring 2026/BDA Spring 26/dataForEDA.csv", header=TRUE)
+# dataForEDA
+```{r dataForEDA, echo=TRUE}
+EDA <-read.csv ("C:/Users/tyler/OneDrive/Documents/GitHub/work_to_show/Classes Spring 2026/BDA Spring 26/Datasets/dataForEDA.csv", header=TRUE)
 #head of data
 head(EDA)
 #summary of data
@@ -79,8 +77,124 @@ plot(EDA$X,EDA$Y)
 plot(EDA$X,EDA$Z)
 plot(EDA$Y,EDA$Z)
 ```
-## chunk name
-```{r}
+# one sample mean
+```{r one sample mean, echo=TRUE, message=TRUE, warning=TRUE, paged.print=TRUE}
+micro <- read.csv("C:/Users/tyler/OneDrive/Documents/GitHub/work_to_show/Classes Spring 2026/BDA Spring 26/Datasets/lAPC one sample ttest.csv", header = TRUE)
+t.test(micro$lAPC,mu=6)# tests the column lAPC against the mean of 6
 
+# If the p-value for the t-test is less than 0.05, conclude that the mean is significantly different from 6:   6.976e-14 = 0.00000000000006976     which is well less than 0.05.  We reject the null hypothesis.
+
+# Reject the null hypothesis (H0: m = 6.0)
+
+# The mean log10 APC level was found to be significantly different from the required quality limit of 6.0 log10APC
+
+# The sample mean was 3.05 log10 APC, we are 95% certain the true mean is between 2.60 and 3.50 log10 APC; the food company can comfortably say the average log10 APC level is well less than the 6.0 requirement
+
+```
+# Two Sample t-test unequal
+```{r Two Sample t-test, variances assumed unequal – R code, echo=TRUE, message=TRUE, warning=TRUE, paged.print=TRUE}
+nfl<-read.csv("C:/Users/tyler/OneDrive/Documents/GitHub/work_to_show/Classes Spring 2026/BDA Spring 26/Datasets/nfl data 2019.csv",header=TRUE)
+nfl$Div<-as.factor(nfl$Div)
+t.test(OffPtsPerG ~ Div, data = nfl)
+
+# The p-value is 0.169 (greater than 0.05) we fail to reject the null hypothesis.
+
+```
+
+# Two Sample t-test equal
+```{r Two Sample t-test, variances assumed equal –R Code, echo=TRUE, message=TRUE, warning=TRUE, paged.print=TRUE}
+nfl<-read.csv("C:/Users/tyler/OneDrive/Documents/GitHub/work_to_show/Classes Spring 2026/BDA Spring 26/Datasets/nfl data 2019.csv",header=TRUE)
+nfl$Div<-as.factor(nfl$Div) 
+t.test(OffPtsPerG ~ Div, data = nfl,var.equal = TRUE)
+
+# The p-value is 0.1686 (greater than 0.05) again, we fail to reject the null hypothesis.
+
+
+```
+
+# Folded F test
+```{r R for Folded F test, echo=TRUE, message=TRUE, warning=TRUE, paged.print=TRUE}
+nfl<-read.csv("C:/Users/tyler/OneDrive/Documents/GitHub/work_to_show/Classes Spring 2026/BDA Spring 26/Datasets/nfl data 2019.csv",header=TRUE)
+group1 <- nfl$OffPtsPerG[nfl$Div == "AFC"]
+group2 <- nfl$OffPtsPerG[nfl$Div == "NFC"]
+var.test(group1, group2)
+
+# The p-value is 0.4931 (greater than 0.05), we fail to reject the null hypothesis.
+
+```
+
+# paired t test
+```{r R for paired t test, echo=TRUE, message=TRUE, warning=TRUE, paged.print=TRUE}
+act<-read.csv("C:/Users/tyler/OneDrive/Documents/GitHub/work_to_show/Classes Spring 2026/BDA Spring 26/Datasets/bda act data.csv",header=TRUE)
+t.test(act$ACT_Math, act$ACT_English, paired = TRUE)
+
+
+#The p-value is 0.004438 (less than 0.05), we reject the null hypothesis.
+
+```
+
+# Power
+```{r Power, echo=TRUE, message=TRUE, warning=TRUE, paged.print=TRUE}
+
+power.t.test(n = 30, # sample size in each group      
+             delta = .7, #effect size (difference in means that needs to be detected) 
+             sd = 0.9, #pooled standard deviation
+             sig.level = 0.05, #level of significance for the hypothesis test
+             type = "two.sample", #type of t-test
+             alternative = "two.sided") #number of tails
+
+```
+
+# Anova
+```{r Anova, echo=TRUE, message=TRUE, warning=TRUE, paged.print=TRUE}
+apc<-read.csv("C:/Users/tyler/OneDrive/Documents/GitHub/work_to_show/Classes Spring 2026/BDA Spring 26/Datasets/new micro treatment.csv",header=TRUE)
+head(apc)
+colnames(apc) # "id"       "trt"      "log10APC"
+# trt column as factor
+apc$trt<-as.factor(apc$trt)
+# start of anova 
+# fit<-aov(col_to_mean ~ unique_identifier, data=data)
+fit<-aov(log10APC~trt,data=apc)
+summary(fit)
+# tukey test for mult comparisons of means 
+TukeyHSD(fit,"trt")
+# grouped summaries
+# aggregate(col_to_mean ~ unique_identifier, data = data, FUN = function)
+aggregate(log10APC~trt, data = apc, FUN = mean)
+library(agricolae) # to get duncan test
+# compare all treatment means
+# dun<-duncan.test(fit, "unique_identifier", group = TRUE)
+dun<-duncan.test(fit, "trt", group = TRUE)
+print(dun)
+
+# Example: 
+SOAP<-read.csv("C:/Users/tyler/OneDrive/Documents/GitHub/work_to_show/Classes Spring 2026/BDA Spring 26/Datasets/soap.csv",header=TRUE)
+head(SOAP)
+colnames(SOAP) # "id"     "Brand"  "Rating"
+# Brand column as factor
+SOAP$Brand<-as.factor(SOAP$Brand)
+# start of anova 
+fit<-aov(Rating~Brand,data=SOAP)
+summary(fit)
+# tukey test for mult comparisons of means 
+TukeyHSD(fit,"Brand")
+# grouped summaries
+aggregate(Rating~Brand, data = SOAP, FUN = mean)
+library(agricolae) # to get duncan test
+# compare all treatment means
+dun<-duncan.test(fit, "Rating", group = TRUE)
+print(dun)
+```
+
+# P-VALUE REJECTION
+```{r P-VALUE REJECTION, echo=TRUE, message=TRUE, warning=TRUE, paged.print=TRUE}
+p_val <- 6.53990335179442e-12
+level_sig <- 0.05
+
+if (p_val <= level_sig) {
+  print("Reject")
+} else {
+  print("Fail to reject")
+}
 ```
 

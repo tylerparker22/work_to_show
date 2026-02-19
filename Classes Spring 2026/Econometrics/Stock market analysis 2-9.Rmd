@@ -1,0 +1,165 @@
+---
+title: "Stock market analysis 2-9"
+output: html_notebook
+---
+
+```{r}
+library(quantmod)
+library(PerformanceAnalytics)
+```
+```{r}
+getSymbols(c("WMT",'^GSPC'), from='2022-01-01')
+head(WMT)
+```
+```{r}
+walmart= monthlyReturn(WMT)
+sp500=monthlyReturn(GSPC)
+lm(walmart~sp500)
+plot(Cl(WMT))
+```
+```{r}
+getSymbols('NVDA', from ='2022-01-01')
+nvda=monthlyReturn(NVDA)
+lm(nvda~ sp500)
+plot(Cl(NVDA))
+```
+```{r}
+data=merge(walmart, nvda,sp500)
+colnames(data)=c("Walmart",'NVDA',"S&P500")
+chart.CumReturns(data,wealth.index=T, legend.loc='topleft')
+```
+
+```{r}
+chart.Regression(walmart,sp500,fit='linear',
+                 main='Returns on Walmart and S&P 500')
+```
+
+```{r}
+# Gold and silver:
+getSymbols(c("GC=F", "SI=F"), from = "2026-1-01")
+plot(Cl(`GC=F`))
+plot(Cl(`SI=F`))
+# Euro and Japanese Yen
+getSymbols(c("EURUSD=X", "JPY=X"), from = "2025-01-01")
+plot(Cl(`EURUSD=X`))
+plot(Cl(`JPY=X`))
+```
+## assignment
+```{r}
+# pick comp (META)
+getSymbols(c("META",'^GSPC'), from='2022-01-01')
+head(META)
+
+META1 <- monthlyReturn(Cl(META))
+sp500 <- monthlyReturn(Cl(GSPC))
+
+df=merge(META1,sp500)
+colnames(df)<-c("META",'SP500')
+
+model <- lm(META1 ~ sp500, df = df)
+summary(model)  # alpha = intercept, beta = slope
+
+chart.CumReturns(df,wealth.index=T, legend.loc='topleft')
+```
+
+```{r}
+library(quantmod)
+library(PerformanceAnalytics)
+
+# Download data
+getSymbols(c("WMT","COST","TGT","^GSPC"), from = "2022-02-01")
+
+# Monthly returns (use adjusted prices)
+walmart <- monthlyReturn(Ad(WMT))
+costco  <- monthlyReturn(Ad(COST))
+target  <- monthlyReturn(Ad(TGT))
+sp500   <- monthlyReturn(Ad(GSPC))
+
+# Merge into one dataset so dates align
+returns <- na.omit(merge(walmart, costco, target, sp500))
+colnames(returns) <- c("walmart","costco","target","sp500")
+
+# CAPM-style regressions
+lm(walmart ~ sp500, data = returns)
+lm(costco  ~ sp500, data = returns)
+lm(target  ~ sp500, data = returns)
+
+# We can also use “CAPM.beta” to see the beta for each firm, after merging the companies into one data.
+big_retail= merge(walmart, costco, target)
+CAPM.beta(big_retail, sp500)
+
+# create portfolio
+parker_portfolio = Return.portfolio(big_retail)
+CAPM.beta(parker_portfolio, sp500)
+
+data=merge(parker_portfolio, sp500)
+colnames(data)= c('My portfolio','S&P 500')
+chart.CumReturns(data, legend.loc= 'topleft', wealth.index=T)
+```
+
+```{r}
+library(quantmod)
+library(PerformanceAnalytics)
+
+# Download data
+getSymbols(
+  c("WDC", 'HOOD', 'STX', 'MU', 'NEM', 'WBD', 'PLTR', 'LRCX', 'APH', 'INTC',"^GSPC"), 
+  from = "2025-02-01")
+
+company1  <- western_digital
+company2  <- robinhood_markets
+company3  <- seagate_tech
+company4  <- micron_tech
+company5  <- newmont
+company6  <- warner_bros
+company7  <- palantir_tech
+company8  <- lam_research
+company9  <- amphenol
+company10 <- intel
+
+# Monthly returns (use adjusted prices)
+company1 <- monthlyReturn(Ad(WDC))
+company2  <- monthlyReturn(Ad(HOOD))
+company3  <- monthlyReturn(Ad(STX))
+company4   <- monthlyReturn(Ad(MU))
+company5 <- monthlyReturn(Ad(NEM))
+company6  <- monthlyReturn(Ad(WBD))
+company7  <- monthlyReturn(Ad(PLTR))
+company8   <- monthlyReturn(Ad(LRCX))
+company9 <- monthlyReturn(Ad(APH))
+company10  <- monthlyReturn(Ad(INTC))
+sp500   <- monthlyReturn(Ad(GSPC))
+
+# Merge into one dataset so dates align
+returns <- na.omit(
+  merge(company1, company2, company3, company4,company5,company6,company7,company8,company9,company10))
+colnames(returns) <- c(
+  "company1","company2","company3","company4","company5",
+  "company6","company7","company8","company9","company10"
+)
+
+
+# CAPM-style regressions
+lm(company1 ~ sp500, data = returns)
+lm(company2  ~ sp500, data = returns)
+lm(company3  ~ sp500, data = returns)
+lm(company4 ~ sp500, data = returns)
+lm(company5  ~ sp500, data = returns)
+lm(company6  ~ sp500, data = returns)
+lm(company7 ~ sp500, data = returns)
+lm(company8  ~ sp500, data = returns)
+lm(company9  ~ sp500, data = returns)
+lm(company10  ~ sp500, data = returns)
+
+# We can also use “CAPM.beta” to see the beta for each firm, after merging the companies into one data.
+companies= merge(company1, company2, company3, company4,company5,company6,company7,company8,company9,company10)
+CAPM.beta(companies, sp500)
+
+# create portfolio
+parker_portfolio = Return.portfolio(companies)
+CAPM.beta(parker_portfolio, sp500)
+
+data=merge(parker_portfolio, sp500)
+colnames(data)= c('My portfolio','S&P 500')
+chart.CumReturns(data, legend.loc= 'topleft', wealth.index=T)
+```

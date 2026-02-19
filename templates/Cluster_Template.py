@@ -1,13 +1,14 @@
 #%%
 #read the data
 import pandas as pd
-df = pd.read_csv('C:/Users/tyler/OneDrive/Documents/BDA/students.csv')
+df = pd.read_csv("C:/Users/tyler/OneDrive/Documents/BDA/students.csv")
 df.head()
+df.columns
 #-----------------------------------------------------------------------------
 #%%
-var1 = 'likes'
-var2 = 'views'
-Constant = 'category'
+var1 = 'Exam'
+var2 = 'Homework'
+Constant = 'Student'
 
 #k-means
 from sklearn.cluster import KMeans
@@ -39,8 +40,8 @@ print(df)
 #cluster summary
 p1=df.pivot_table(index="cluster",values=[var1,var2],aggfunc="mean")
 p2=df.pivot_table(index="cluster",values=[Constant],aggfunc="count")
-print("Cluster Means \n",p1)
-print("\n \n Number of, {Constant}, per Cluster \n",p2)
+print("Cluster Means /n",p1)
+print("/n /n Number of, {Constant}, per Cluster /n",p2)
 
 #plotting clusters
 import seaborn as sns
@@ -55,3 +56,5 @@ sns.set_palette(customPalette)
 #plot data with seaborn
 facet = sns.lmplot(data=df, x=var1, y=var2, hue='Clusters',
 fit_reg=False, legend=True)
+
+# %%

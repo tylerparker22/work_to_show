@@ -290,8 +290,8 @@ print(soil_crops_pivot.to_string())
 # """
 
 # %% does more fertilizer=more yield? (not really)
-var1= 'Fertilizer_Used'
-var2= 'Crop_Yield_ton_per_hectare'
+var1 = 'Fertilizer_Used'
+var2 = 'Crop_Yield_ton_per_hectare'
 
 #split to training and test datasets
 import numpy as np

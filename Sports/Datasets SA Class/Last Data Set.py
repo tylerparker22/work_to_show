@@ -3,229 +3,139 @@
 import pandas as pd
 df=pd.read_csv("C:/Users/tyler/OneDrive/Documents/GitHub/work_to_show/Sports/Datasets SA Class/SBR001-715.csv")
 #----------------------------
-# %% clean data
-# Now row 0 should be the header row
-df.columns = df.iloc[2]  # Set first row as header
-df = df[1:]              # Remove that row from data
-df = df.reset_index(drop=True)  # Reset index
-#----------------------------
-# Optional: remove extra spaces from column names
-df.columns = df.columns.str.strip()
-df.columns=df.columns.str.replace(',', '', regex=False)
-#----------------------------
-# reshape data 
-df_melted = df.melt(id_vars=['Item'], var_name='Year', value_name='Value')
-print(df_melted)
-#----------------------------
+
 # %% column names
-df=df_melted
 print(df.columns.tolist())
-# ['Item', 'Year', 'Value']
+# ['Item', '2013', '2014', '2015', '2016', '2017', '2018', '2019', '2020', '2021', '2022', np.float64(nan)]
 #----------------------------
 # %% summary stats
-sum_stat=df.groupby('Item').agg({'Year':'unique'})
-sum_stat.describe()
+# columns to clean
+cols = ['2013','2014','2015','2016','2017','2018','2019','2020','2021','2022']
+
+# 1️⃣ remove $ and commas + convert to numeric
+df[cols] = (
+    df[cols]
+    .replace(r'[\$,]', '', regex=True)
+    .apply(pd.to_numeric, errors='coerce')
+)
+
+# 2️⃣ now drop NA rows
+df = df.dropna(subset=['Item'] + cols)
+
+# 3️⃣ summary stats
+df.describe()
+
 #----------------------------------
-# %% Feature Importance for Each Item
-import numpy as np
+
+# %% Items unique
+itme_unqiue=df['Item'].unique()
+itme_unqiue
+
+['Item',
+       'Total Number of Fans Age 13+ (View and/or Attend - add ,000)  ',
+       'Total Number Viewing on TV (add 000)',
+       '% of TV Viewers who Viewed More Than 2-5/yr.',
+       '% of TV Viewers who Viewed 6+ Times/yr.', 'All Fans',
+       'Viewed at Least One Minor League Baseball Game On TV',
+       'Viewed 6+ Minor League Baseball Games on TV',
+       'Followed Minor League Baseball On Facebook',
+       'Followed Minor League Baseball On X (formerly Twitter)',
+       'Purchased Minor League Baseball Logo Apparel',
+       'Follow Minor League Baseball on Facebook - Total all Followers (add 000) ',
+       'Follow Minor League Baseball on X (formerly Twitter) - Total all Followers (add 000)',
+       'Expenditures for Sports Logo Apparel (add 000)',
+       '% of All Fans Purchased Sports Logo Apparel',
+       'Base (Total No. of Minor League Baseball Fans - add ,000)',
+       '% Saying Sport Sponsorship is Extremely Influential',
+       '% Saying Sport Sponsorship is Very Influential',
+       '% Saying Sport Sponsorship is Moderately Influential',
+       '% Saying Sport Sponsorship is Slightly Influential',
+       '% Saying Sport Sponsorship is Not at All Influential', 'Total']
+# %% regression model
 import pandas as pd
-from sklearn.ensemble import RandomForestRegressor
-from sklearn.preprocessing import LabelEncoder
-from matplotlib import pyplot as plt
-
-TARGET_COL = "Value"
-
-# Set random seed for reproducibility
-np.random.seed(42)
-
-# Create a clean copy
-df_clean = df.copy()
-
-# Remove commas from Value column and convert to numeric
-if df_clean[TARGET_COL].dtype == 'object':
-    df_clean[TARGET_COL] = df_clean[TARGET_COL].str.replace(',', '', regex=False)
-    df_clean[TARGET_COL] = pd.to_numeric(df_clean[TARGET_COL], errors='coerce')
-
-# Remove commas from Year column and convert to numeric
-if df_clean['Year'].dtype == 'object':
-    df_clean['Year'] = df_clean['Year'].str.replace(',', '', regex=False)
-    df_clean['Year'] = pd.to_numeric(df_clean['Year'], errors='coerce')
-
-print(f"Original dataset size: {len(df)}")
-
-# Remove rows where Target column is NaN
-df_clean = df_clean.dropna(subset=[TARGET_COL])
-print(f"Dataset size after removing NaN in '{TARGET_COL}': {len(df_clean)}")
-print(f"Removed {len(df) - len(df_clean)} rows with NaN values/n")
-
-# Get unique items
-unique_items = df_clean['Item'].unique()
-print(f"Number of unique items: {len(unique_items)}/n")
-
-# Store results
-results = []
-
-# Loop through each unique item
-for item in unique_items:
-    print(f"/n{'='*60}")
-    print(f"Processing Item: {item}")
-    print(f"{'='*60}")
-    
-    # Filter data for this item
-    item_data = df_clean[df_clean['Item'] == item].copy()
-    
-    # Check if we have enough data
-    if len(item_data) < 10:
-        print(f"Skipping {item} - insufficient data (only {len(item_data)} rows)")
-        continue
-    
-    # Divide data into train and test sets
-    item_data['r'] = np.random.uniform(size=len(item_data))
-    train = item_data[item_data["r"] <= 0.6]
-    test = item_data[item_data["r"] > 0.6]
-    
-    if len(train) < 5 or len(test) < 2:
-        print(f"Skipping {item} - insufficient train/test split")
-        continue
-    
-    print(f"Train set size: {len(train)}")
-    print(f"Test set size: {len(test)}")
-    
-    # Prepare features and target (only Year as feature now)
-    X = train[['Year']]
-    y = train[TARGET_COL]
-    Xtest = test[['Year']]
-    ytest = test[TARGET_COL]
-    
-    # Random Forest Regressor
-    rf = RandomForestRegressor(
-        n_estimators=500,
-        random_state=17,
-        n_jobs=-1
-    )
-    rf.fit(X, y)
-    
-    # Evaluate model
-    train_score = rf.score(X, y)
-    test_score = rf.score(Xtest, ytest)
-    print(f"Train R² Score: {train_score:.4f}")
-    print(f"Test R² Score: {test_score:.4f}")
-    
-    # Store results
-    results.append({
-        'Item': item,
-        'Train_R2': train_score,
-        'Test_R2': test_score,
-        'Train_Size': len(train),
-        'Test_Size': len(test),
-        'Feature_Importance_Year': rf.feature_importances_[0]
-    })
-
-# Create results dataframe
-results_df = pd.DataFrame(results)
-results_df = results_df.sort_values('Test_R2', ascending=False)
-
-print("/n" + "="*60)
-print("SUMMARY RESULTS - Sorted by Test R²")
-print("="*60)
-print(results_df.to_string(index=False))
-
-# Visualize results
-fig, axes = plt.subplots(2, 1, figsize=(12, 10))
-
-# Plot 1: R² Scores by Item
-ax1 = axes[0]
-x_pos = np.arange(len(results_df))
-width = 0.35
-
-ax1.bar(x_pos - width/2, results_df['Train_R2'], width, label='Train R²', alpha=0.8)
-ax1.bar(x_pos + width/2, results_df['Test_R2'], width, label='Test R²', alpha=0.8)
-ax1.set_xlabel('Item')
-ax1.set_ylabel('R² Score')
-ax1.set_title('Model Performance by Item')
-ax1.set_xticks(x_pos)
-ax1.set_xticklabels(results_df['Item'], rotation=45, ha='right')
-ax1.legend()
-ax1.grid(axis='y', alpha=0.3)
-
-# Plot 2: Feature Importance (Year) by Item
-ax2 = axes[1]
-ax2.bar(x_pos, results_df['Feature_Importance_Year'], color='steelblue', alpha=0.8)
-ax2.set_xlabel('Item')
-ax2.set_ylabel('Feature Importance')
-ax2.set_title('Year Feature Importance by Item')
-ax2.set_xticks(x_pos)
-ax2.set_xticklabels(results_df['Item'], rotation=45, ha='right')
-ax2.grid(axis='y', alpha=0.3)
-
-plt.tight_layout()
-plt.show()
-
-# Save results to CSV
-results_df.to_csv('feature_importance_by_item.csv', index=False)
-print("/nResults saved to 'feature_importance_by_item.csv'")
-
-
-
-# %% what i am doing
-#"""Based on MiLB fan engagement data from 2016–2024, which fan market segments should Minor League Baseball target 
-#to maximize the success of the MiLB Community Impact Series (Baseball Futures 2026), and why?"""
-df=df_clean
-
-# %% target graphed over time
-import matplotlib
-matplotlib.use("Agg")
 import numpy as np
+import statsmodels.api as sm
 import matplotlib.pyplot as plt
+from statsmodels.stats.outliers_influence import summary_table
 
-# Define the items you want to plot (these are row names in the 'Item' column)
-data1 = 'Total Number of Fans Age 13+ (View and/or Attend - add ,000)'
-data2 = 'Year'  # Replace this with an actual Item name from your data
+# Set 'Item' as the index and transpose so items become columns
+df_transposed = df.set_index('Item').T
 
-# Filter data for each item
-item1_data = df_clean[df_clean['Item'] == data1].copy().sort_values('Year')
-item2_data = df_clean[df_clean['Item'] == data2].copy().sort_values('Year')
+# Clean up - remove the first row if it's a duplicate header
+if df_transposed.index[0] == 'Item':
+    df_transposed = df_transposed.iloc[1:]
 
-# Create figure
-fig = plt.figure()
-ax = fig.add_subplot()
+# Convert to numeric - use apply instead of a loop
+df_transposed = df_transposed.apply(pd.to_numeric, errors='coerce')
 
-# Plot both items
-ax.plot(item1_data['Year'], item1_data['Value'], color="black", 
-        linestyle="dashed", marker='o', label=data1)
-ax.plot(item2_data['Year'], item2_data['Value'], color="blue", 
-        linestyle="dashed", marker='s', label=data2)
+# Check the structure
+print("Transposed data shape:", df_transposed.shape)
+print("\nColumn names (first 10):")
+print(df_transposed.columns[:10].tolist())
+print("\nFirst few rows:")
+print(df_transposed.head())
 
-ax.set_xlabel('Year')
-ax.set_ylabel('Value')
-ax.set_title('Comparison Over Time')
+# Now run your regression with the transposed data
+var1 = 'Viewed at Least One Minor League Baseball Game On TV'
+var2 = 'Purchased Minor League Baseball Logo Apparel'
+
+# Check if columns exist
+print(f"\n{var1} in columns: {var1 in df_transposed.columns}")
+print(f"{var2} in columns: {var2 in df_transposed.columns}")
+
+# Split to training and test datasets
+np.random.seed(42)
+df_transposed['r'] = np.random.uniform(size=len(df_transposed))
+
+train = df_transposed[df_transposed["r"] <= .6]
+test = df_transposed[df_transposed["r"] > .6]
+
+train = train.drop("r", axis=1)
+test = test.drop("r", axis=1)
+
+# Regression on training data
+y = train[var2]
+x = train[var1]
+x = sm.add_constant(x)
+reg = sm.OLS(y, x).fit()
+print("\n" + "="*60)
+print("REGRESSION SUMMARY")
+print("="*60)
+print(reg.summary())
+
+# Mean absolute error (MAE) for test data
+tx = test[var1]
+tx = sm.add_constant(tx)
+psales = reg.predict(tx)
+tsales = test[var2]
+ae = abs(tsales - psales)
+mae = np.mean(ae)
+print(f"\nThe mean absolute error is {mae:.4f}")
+
+# Root Mean Square Error
+N = len(test)
+rmse = np.sqrt((np.sum((tsales - psales)**2)) / N)
+print(f"The root mean square error is {rmse:.4f}")
+
+# Prediction interval plot
+x = train[var1]
+st, data, ss2 = summary_table(reg, alpha=0.05)
+fittedvalues = data[:, 2]
+predict_ci_low, predict_ci_upp = data[:, 6:8].T
+
+fig = plt.figure(figsize=(10, 6))
+ax = fig.add_subplot(1, 1, 1)
+ax.plot(x, y, 'o', label='Actual', markersize=8)
+ax.plot(x, fittedvalues, '-', lw=2, label='Fitted', color='blue')
+ax.plot(x, predict_ci_low, 'r--', lw=2, label='95% Prediction Interval')
+ax.plot(x, predict_ci_upp, 'r--', lw=2)
+ax.set_title(f"Predicting {var2}\nfrom {var1}", fontsize=12)
+ax.set_xlabel(var1, fontsize=10)
+ax.set_ylabel(var2, fontsize=10)
 ax.legend()
 ax.grid(True, alpha=0.3)
+plt.tight_layout()
+plt.show()
+# %% what is the mean hh income if they attended one game? 
+varibale='Viewed at Least One Minor League Baseball Game On TV'
 
-# Save to a specific location
-save_path = r"C:/Users/tyler/OneDrive/Documents/GitHub/work_to_show/Random_Plots/lds.png"
-plt.savefig(save_path, dpi=300, bbox_inches="tight")  # ADD THIS LINE
-plt.close()
-print(f"Plot saved to: {save_path}")
-
-# %% Time sereis
-# MAKE SURE THIS GOES AT THE TOP OF EVERY PLOT
-import matplotlib
-matplotlib.use("Agg")
-
-import numpy as np
-import matplotlib.pyplot as plt
-
-column = 'Total Number of Fans Age 13+ (View and/or Attend - add ,000)'
-
-fig = plt.figure()
-ax = fig.add_subplot()
-
-ax.plot(df[column], linestyle="dashed", label="Default")
-ax.legend()
-
-# IMPORTANT when using Agg:
-plt.savefig("fans_plot.png", dpi=300, bbox_inches="tight")
-plt.close()
-
-# %%
