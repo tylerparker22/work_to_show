@@ -151,6 +151,7 @@ apc<-read.csv("C:/Users/tyler/OneDrive/Documents/GitHub/work_to_show/Classes Spr
 head(apc)
 colnames(apc) # "id"       "trt"      "log10APC"
 # trt column as factor
+# $word <- as.factor( $word)
 apc$trt<-as.factor(apc$trt)
 # start of anova 
 # fit<-aov(col_to_mean ~ unique_identifier, data=data)
@@ -186,9 +187,103 @@ dun<-duncan.test(fit, "Rating", group = TRUE)
 print(dun)
 ```
 
+# Block Design
+```{r}
+pt<-read.csv("C:/Users/tyler/OneDrive/Documents/GitHub/work_to_show/Classes Spring 2026/BDA Spring 26/Datasets/pt data for blocking.csv",header=TRUE)
+head(pt)
+pt$store <- as.factor(pt$store)
+pt$brand <- as.factor(pt$brand)
+#install.packages("agricolae") # if not installed
+library(agricolae)
+fit <- aov(sales ~ brand + store, data = pt)
+summary(fit)
+duncan_results <- duncan.test(fit, "brand", group = TRUE)
+print(duncan_results)
+```
+# Scenario
+```{r}
+s1<-read.csv("C:/Users/tyler/OneDrive/Documents/GitHub/work_to_show/Classes Spring 2026/BDA Spring 26/Datasets/s1 full factorial.csv",header=TRUE)
+head(s1)
+s1$humidity <- as.factor(s1$humidity)
+s1$airflow <- as.factor(s1$airflow)
+fit <- aov(yield ~ humidity * airflow, data = s1)
+summary(fit)
+
+s2<-read.csv("C:/Users/tyler/OneDrive/Documents/GitHub/work_to_show/Classes Spring 2026/BDA Spring 26/Datasets/s2 full factorial.csv",header=TRUE)
+head(s2)
+s2$humidity <- as.factor(s2$humidity)
+s2$airflow <- as.factor(s2$airflow)
+fit <- aov(yield ~ humidity * airflow, data = s2)
+summary(fit)
+duncan_results <- duncan.test(fit, "humidity", group = TRUE)
+print(duncan_results)
+
+s3<-read.csv("C:/Users/tyler/OneDrive/Documents/GitHub/work_to_show/Classes Spring 2026/BDA Spring 26/Datasets/s3 full factorial.csv",header=TRUE)
+head(s3)
+s3$humidity <- as.factor(s3$humidity)
+s3$airflow <- as.factor(s3$airflow)
+fit <- aov(yield ~ humidity * airflow, data = s3)
+summary(fit)
+
+library(agricolae)
+fit <- aov(yield ~ humidity, data = s3)
+summary(fit)
+duncan_results <- duncan.test(fit, "humidity", group = TRUE)
+print(duncan_results)
+fit <- aov(yield ~ airflow, data = s3)
+summary(fit)
+duncan_results <- duncan.test(fit, "airflow", group = TRUE)
+print(duncan_results)
+
+s4<-read.csv("C:/Users/tyler/OneDrive/Documents/GitHub/work_to_show/Classes Spring 2026/BDA Spring 26/Datasets/s4 full factorial.csv",header=TRUE)
+head(s4)
+s4$humidity <- as.factor(s4$humidity)
+s4$airflow <- as.factor(s4$airflow)
+fit <- aov(yield ~ humidity * airflow, data = s4)
+summary(fit)
+s4$ha <- paste(s4$humidity, s4$airflow, sep = " ")
+head(s4)
+#install.packages("agricolae") # if not installed
+# library(agricolae)
+fit <- aov(yield ~ ha, data = s4)
+summary(fit)
+duncan_results <- duncan.test(fit, "ha", group = TRUE)
+print(duncan_results)
+
+s4$ha <- paste(s4$humidity, s4$airflow, sep = " ")
+head(s4)
+#install.packages("agricolae") # if not installed
+library(agricolae)
+fit <- aov(yield ~ ha, data = s4)
+summary(fit)
+duncan_results <- duncan.test(fit, "ha", group = TRUE)
+print(duncan_results)
+```
+# Covariate Example
+```{r}
+# Covariate Example
+dbp<-read.csv("C:/Users/tyler/OneDrive/Documents/GitHub/work_to_show/Classes Spring 2026/BDA Spring 26/Datasets/dbp data for covariate.csv",header=TRUE)
+head(dbp)
+dbp$Treatment <- as.factor(dbp$Treatment)
+fit <- lm(DBP ~ Treatment + Weight, data = dbp)
+anova(fit)
+
+## Covariate follow-up
+#install.packages("emmeans") # run once, if not installed
+library(emmeans)
+emm <- emmeans(fit, ~ Treatment)
+pairs(emm)
+emm
+```
+
+
+```{r}
+
+```
+
 # P-VALUE REJECTION
 ```{r P-VALUE REJECTION, echo=TRUE, message=TRUE, warning=TRUE, paged.print=TRUE}
-p_val <- 6.53990335179442e-12
+p_val <- 2e-16
 level_sig <- 0.05
 
 if (p_val <= level_sig) {
