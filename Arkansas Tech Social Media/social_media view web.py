@@ -2,7 +2,7 @@ from dash import Dash, dcc, html, dash_table
 import sqlite3
 import pandas as pd
 
-DB_PATH=r"D:/Send to Katie/All Social Media/social_media.db"
+DB_PATH=r"C:/Users/tyler/OneDrive/Documents/GitHub/work_to_show/Arkansas Tech Social Media/social_media.db"
 conn = sqlite3.connect(DB_PATH)
 df = pd.read_sql_query("SELECT * FROM post;", conn)
 conn.close()

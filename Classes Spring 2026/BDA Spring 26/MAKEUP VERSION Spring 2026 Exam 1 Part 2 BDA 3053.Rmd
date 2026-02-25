@@ -1,0 +1,103 @@
+---
+title: "MAKEUP VERSION Spring 2026 Exam 1 Part 2 BDA 3053"
+output: html_notebook
+---
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Ctrl+Shift+Enter*. 
+
+```{r}
+printers <- read.csv("C:/Users/tyler/Downloads/printers2.csv")
+baseball<- read.csv("C:/Users/tyler/Downloads/baseball speed2.csv")
+concrete <- read.csv("C:/Users/tyler/Downloads/concrete2.csv")
+customer <- read.csv("C:/Users/tyler/Downloads/customer satis2.csv")
+```
+
+1.	A study was conducted where three different brands of printers were randomly sent to office locations of a large company.  The average monthly costs after a year of service from the printers were recorded, determine if there is a difference in cost by brand.  (Found in printers2.csv) Determine what differences exist, if any, between the three brands.
+
+a.	What analysis did you use?  One way anova 
+b.	What null hypothesis was tested? H0=BrandA=BrandB=BrandC
+c.	What is your p-value for this hypothesis?  What is the conclusion based on the p-value? 2e-16 reject 
+d.	What follow-up method was used (if any)? Tukey - Duncan 
+e.	Provide the means if the means are significantly different and summarize the conclusion using the means.
+printer
+<fctr>
+cost
+<dbl>
+BrandA	948.174			
+BrandB	1469.090			
+BrandC	1153.265	
+
+Conclusion: BrandB had the highest mean cost. BrandC had the second highest mean cost. BrandA had the lowest mean cost. All 3 were significanlty different at a=.05. 
+           cost groups
+BrandB 1469.090      a
+BrandC 1153.265      b
+BrandA  948.174      c 
+f.	Include your R code.
+
+```{r}
+colnames(printers) # "printer" "cost"  
+head(printers)
+# trt column as factor
+printers$printer<-as.factor(printers$printer)
+# start of anova 
+# fit<-aov(col_to_mean ~ unique_identifier, data=data)
+fit<-aov(cost~printer,data=printers)
+summary(fit)
+# tukey test for mult comparisons of means 
+TukeyHSD(fit,"printer")
+# grouped summaries
+# aggregate(col_to_mean ~ unique_identifier, data = data, FUN = function)
+aggregate(cost~printer, data = printers, FUN = mean)
+library(agricolae) # to get duncan test
+# compare all treatment means
+# dun<-duncan.test(fit, "unique_identifier", group = TRUE)
+dun<-duncan.test(fit, "printer", group = TRUE)
+print(dun)
+```
+
+2.	Customers were given a questionnaire before major product changes.  (Results displayed in the “Before” column.) The same 30 customers were given the same questionnaire one year after the product changes were made (“After” column).  The data are found in the file customer satis2.csv. Analyze the impact of the product changes on customer satisfaction using R and complete the five questions below. (10 is very satisfied;1 is not satisfied at all)
+a.	What analysis did you use?  Paired ttest
+b.	What null hypothesis was tested? H0: product_before = product_after
+c.	What is your p-value for this hypothesis? What is the conclusion based on the p-value? 0.0003376 reject 
+d.	Type or paste in your means if the null hypothesis was rejected, and place it into a sentence that summarize the conclusions that should be made. -.09
+
+Since the p-value was 0.0003376 (less than .05) we reject the null hypothesis and concluse there is a significant difference between the rating before and after. On average the rating went down -.09 points. 
+
+e.	Include your R code
+```{r}
+colnames(customer) # "Customer" "Before"   "After"  
+t.test(customer$After, customer$Before, paired = TRUE)
+#The p-value is 0.0003376 (less than 0.05), we reject the null hypothesis.
+```
+
+3.	A study was done to determine the impact of a new baseball adopted by major league baseball on the speed a ball leaves a bat.  Special equipment was used to measure the speed the ball left the bat during a trial where the new ball and old ball were thrown to a batter in random order.  (This is not a repeated measure, assume the new ball sample and old ball sample are independent samples of different individuals) Complete an analysis to determine if the new ball significantly impacts speed leaving the bat.  Results are recorded in “baseball speed2.csv”.  
+a.	Were the variances between the two groups found to be significantly different? NO pvalue is .9144
+b.	What t-test was used? FOlded f test 
+c.	Write the null hypothesis regarding mean costs that was tested. u_new = u_old
+d.	What p-value for the mean null hypothesis was calculated and what conclusion was made regarding the null hypothesis? .8516 no significant difference 
+e.	Provide the means if the null hypothesis was rejected and include a sentence that summarizes the conclusion that should be made using the means.
+Fail to reject null hypothesis. Mean exit speed was 92.13 and the old was 92.5. No significant difference. When the pvalue was .9144. 
+f.	Include your R code
+```{r}
+colnames(baseball) # "baseball" "speed"  
+unique(baseball$baseball) # "old" "new"
+group1 <- baseball$speed[baseball$baseball == "old"]
+group2 <- baseball$speed[baseball$baseball == "new"]
+var.test(group1, group2)
+```
+
+4.	A concrete supplier is being considered for a construction project.  The regulatory requirement for the building requires a concrete foundation with a minimum average of 5800 psi strength.  The concrete supplier makes 20 core samples available, which are tested for psi strength (concrete2.csv).  Conduct a test to determine if the data indicate the concreate supplier is significantly different from 5800psi on average.  
+a.	What analysis did you use?  One Sample t-test
+b.	What null hypothesis was tested? u_strength=5800
+c.	What is your p-value for this hypothesis?  What is the conclusion based on the p-value? 8.14e-10 reject 
+d.	Provide the mean if the mean is significantly different and summarize the conclusion using the mean.
+Mean is 5109.9. Reject the null hypotheses because the p-value is 8.14e-10 far less than .05. Found to be significantly below 5800 psi. 
+e.	Include your R code.
+
+```{r}
+colnames(concrete) # psi
+t.test(concrete$psi,mu=5800)
+```
+

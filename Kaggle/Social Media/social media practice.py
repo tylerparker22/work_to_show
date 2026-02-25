@@ -1,4 +1,5 @@
-import pandas as pd
+# %% imports
+ pandas as pd
 import numpy as np
 from sklearn.ensemble import RandomForestRegressor
 from textblob import TextBlob

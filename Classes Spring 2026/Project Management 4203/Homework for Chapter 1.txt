@@ -1,0 +1,107 @@
+Question:
+Like many other professions such as accounting, marketing, and finance, there is a professional organization for project managers. One professional organization for project managers has grown from 93,000 in 2002 to more than 565,000 currently and is the ________.
+
+Answer:
+Project Management Institute (PMI)
+
+Question:
+Which of the choices listed below is NOT considered a project?
+
+Answer:
+Production of automobile tires 
+
+Question:
+Which of the following activities is the best example of a project?
+
+Answer:
+Writing a policy manual 
+
+Question:
+Which of the following is NOT typical of a project manager?
+
+Answer:
+Overseeing existing operations 
+
+Question:
+Which of the following is typically the responsibility of a project manager?
+
+Answer:
+All of these are typical responsibilities 
+
+Question:
+A series of coordinated, related, multiple projects that continue over an extended time period and are intended to achieve a goal is known as a
+
+Answer:
+Program 
+
+Question:
+Which of the following is a good example of a program?
+
+Answer:
+Developing a new residential area that includes six custom homes 
+
+Question:
+A(n) _________ is a series of coordinated, related multiple projects that continue over an extended time intended to achieve a goal.
+
+Answer:
+program 
+
+Question:
+Specific time, cost, and performance requirements are among the characteristics that separate project management from other endeavors of the organization.
+
+Answer:
+True 
+
+Question:
+In which stage of the project life cycle is a major portion of the actual project work performed?
+
+Answer:
+Executing 
+
+Question:
+The establishment of project goals, specifications, and responsibilities usually occurs in the ________ stage of the project life cycle.
+
+Answer:
+defining 
+
+Question:
+Training the customer, releasing staff, and releasing resources occurs in the ________ stage of the project life cycle.
+
+Answer:
+closing 
+
+Question:
+Agile PM is appropriate when ________.
+
+Answer:
+project scope is unknown or unstable 
+
+Question:
+Agile project management involves ________ whereas traditional project management involves ________.
+
+Answer:
+iterative and incremental delivery, upfront planning with high predictability 
+
+Question:
+Iterative and incremental delivery means ________.
+
+Answer:
+the components or features of the project product or service are delivered one at a time throughout the duration of the project 
+
+Question:
+Which dimension of project management centers on creating a temporary social system within a larger organizational environment that combines the talents of a divergent set of professionals working to complete the project?
+
+Answer:
+Sociocultural 
+
+Question:
+Which of these is NOT part of the "technical dimension" of project management?
+
+Answer:
+Problem solving 
+
+Question:
+Project managers must have many competencies, among them leadership, teamwork, and negotiation. Leadership, teamwork, and negotiation are examples of the ________ dimension of the project management process.
+
+Answer:
+sociocultural 
