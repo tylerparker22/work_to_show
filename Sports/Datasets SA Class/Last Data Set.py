@@ -1,7 +1,7 @@
 # 3.13.7 python works
 # %% import data
 import pandas as pd
-df=pd.read_csv("C:/Users/tyler/OneDrive/Documents/GitHub/work_to_show/Sports/Datasets SA Class/SBR001-715.csv")
+df=pd.read_csv("//sdata/susers/tparker27/My Documents/GitHub/work_to_show/Sports/Datasets SA Class/SBR001-715.csv")
 #----------------------------
 
 # %% column names
@@ -15,7 +15,7 @@ cols = ['2013','2014','2015','2016','2017','2018','2019','2020','2021','2022']
 # 1️⃣ remove $ and commas + convert to numeric
 df[cols] = (
     df[cols]
-    .replace(r'[\$,]', '', regex=True)
+    .replace(r'[/$,]', '', regex=True)
     .apply(pd.to_numeric, errors='coerce')
 )
 
@@ -70,9 +70,9 @@ df_transposed = df_transposed.apply(pd.to_numeric, errors='coerce')
 
 # Check the structure
 print("Transposed data shape:", df_transposed.shape)
-print("\nColumn names (first 10):")
+print("/nColumn names (first 10):")
 print(df_transposed.columns[:10].tolist())
-print("\nFirst few rows:")
+print("/nFirst few rows:")
 print(df_transposed.head())
 
 # Now run your regression with the transposed data
@@ -80,7 +80,7 @@ var1 = 'Viewed at Least One Minor League Baseball Game On TV'
 var2 = 'Purchased Minor League Baseball Logo Apparel'
 
 # Check if columns exist
-print(f"\n{var1} in columns: {var1 in df_transposed.columns}")
+print(f"/n{var1} in columns: {var1 in df_transposed.columns}")
 print(f"{var2} in columns: {var2 in df_transposed.columns}")
 
 # Split to training and test datasets
@@ -98,7 +98,7 @@ y = train[var2]
 x = train[var1]
 x = sm.add_constant(x)
 reg = sm.OLS(y, x).fit()
-print("\n" + "="*60)
+print("/n" + "="*60)
 print("REGRESSION SUMMARY")
 print("="*60)
 print(reg.summary())
@@ -110,7 +110,7 @@ psales = reg.predict(tx)
 tsales = test[var2]
 ae = abs(tsales - psales)
 mae = np.mean(ae)
-print(f"\nThe mean absolute error is {mae:.4f}")
+print(f"/nThe mean absolute error is {mae:.4f}")
 
 # Root Mean Square Error
 N = len(test)
@@ -129,7 +129,7 @@ ax.plot(x, y, 'o', label='Actual', markersize=8)
 ax.plot(x, fittedvalues, '-', lw=2, label='Fitted', color='blue')
 ax.plot(x, predict_ci_low, 'r--', lw=2, label='95% Prediction Interval')
 ax.plot(x, predict_ci_upp, 'r--', lw=2)
-ax.set_title(f"Predicting {var2}\nfrom {var1}", fontsize=12)
+ax.set_title(f"Predicting {var2}/nfrom {var1}", fontsize=12)
 ax.set_xlabel(var1, fontsize=10)
 ax.set_ylabel(var2, fontsize=10)
 ax.legend()

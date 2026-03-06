@@ -1,9 +1,9 @@
 #%%
 #read the data
 import pandas as pd
-df = pd.read_csv("C:/Users/tyler/OneDrive/Documents/BDA/students.csv")
+df = pd.read_csv("//sdata/susers/tparker27/My Documents/GitHub/work_to_show/Classes Spring 2026/BDA Spring 26/Datasets/Pie ingredients.csv")
 df.head()
-df.columns
+df.columns # ['butter', 'oil', 'rating']
 #-----------------------------------------------------------------------------
 #%%
 var1 = 'Exam'

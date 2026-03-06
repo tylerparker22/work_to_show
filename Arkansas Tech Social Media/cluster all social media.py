@@ -4,7 +4,7 @@ import sqlite3
 import pandas as pd
 import glob
 import os
-DB_PATH = "E:/Send to Katie/All Social Media/social_media.db"
+DB_PATH = "//sdata/susers/tparker27/My Documents/GitHub/work_to_show/Arkansas Tech Social Media/social_media.db"
 conn = sqlite3.connect(DB_PATH)
 df = pd.read_sql_query("SELECT * FROM story", conn) 
 print(df.head(2))
@@ -55,7 +55,7 @@ print(df)
 #cluster summary
 p1=df.pivot_table(index="cluster",values=["Views","Profile visits"],aggfunc="mean")
 p2=df.pivot_table(index="cluster",values=["Duration (sec)"],aggfunc="count")
-print("Cluster Means \n",p1)
-print("\n \n Number of Post type per Cluster \n",p2)
+print("Cluster Means /n",p1)
+print("/n /n Number of Post type per Cluster /n",p2)
 #-----------------------------------------------------------------------------
 #%%
