@@ -2,18 +2,9 @@
 title: "BDA Spring 26 Notes"
 output: html_notebook
 ---
-
-<<<<<<< HEAD
-## EDA in R (Full Script)
-
-```{r}
-# EDA in R (full script)
-project_csv <-read.csv("//sdata/susers/tparker27/My Documents/GitHub/work_to_show/Classes Spring 2026/BDA Spring 26/project.csv",header=TRUE) # FORWARD SLASH AND HEADER TRUE IF HAVE COLUMN NAMES
-=======
 # EDA in R (Full Script)
 ```{r EDA in R (full script), echo=TRUE, message=TRUE, warning=TRUE, paged.print=TRUE}
 project_csv <-read.csv("C:/Users/tyler/OneDrive/Documents/GitHub/work_to_show/Classes Spring 2026/BDA Spring 26/Datasets/project.csv",header=TRUE) # FORWARD SLASH AND HEADER TRUE IF HAVE COLUMN NAMES
->>>>>>> 7b255bd0d523c709aef3570f7d43f00f5534679a
 # column names
 colnames(project_csv) # "days_duration" "project_cost" 
 #head of the data
@@ -283,10 +274,119 @@ emm <- emmeans(fit, ~ Treatment)
 pairs(emm)
 emm
 ```
-
+# Regression
+```{r}
+# Regression
+house <-read.csv("C:/Users/tyler/OneDrive/Documents/GitHub/work_to_show/Classes Spring 2026/BDA Spring 26/Datasets/housing.csv", header=TRUE)
+head(house)
+model <- lm(saleprice ~ sqft, data = house)
+summary(model)
+#below this line “extra” code to provide a visual plot
+plot(house$sqft,house$saleprice)
+abline(model)
+pred_interval <- predict(model, newdata=house, interval="prediction",level = 0.95)
+lines(house$sqft, pred_interval[,2])
+lines(house$sqft, pred_interval[,3])
+```
 
 ```{r}
+# Multi Regression
+house2 <-read.csv("C:/Users/tyler/OneDrive/Documents/GitHub/work_to_show/Classes Spring 2026/BDA Spring 26/Datasets/housing2.csv", header=TRUE)
+head(house2)
+model <- lm(SalePrice ~ SqFt+Age+Location+Lotsize+Condition , data = house2)
+#alternate syntax to include all other columns:
+#model <- lm(SalePrice ~ ., data = house2)
+summary(model)
+```
 
+# Categroical Analysis
+R Code for 1-Sample p-test
+```{r}
+prop.test(39, 60, p = 0.5, correct=FALSE)
+```
+R code for 2-Proportion Test (Contingency Table and Odds Ratio)
+```{r}
+# Create data frame
+p <- data.frame(
+  method = c("A", "A", "B", "B"),
+  quality = c("Good", "Defective", "Good", "Defective"),
+  count = c(75, 25, 87, 13)
+)
+
+# Create contingency table (apply weights)
+tab <- xtabs(count ~ method + quality, data = p)
+tab
+
+# Chi-square test of independence
+cs <- chisq.test(tab)
+cs
+
+# Expected cell counts
+cs$expected
+
+# Fisher's Exact Test
+fisher.test(tab)
+
+# Odds Ratio (Wald method)
+library(epitools)
+oddsratio(tab, method = "wald")
+```
+McNemar’s Test for Matched Pairs Proportions
+```{r}
+pm <- data.frame(
+before = c("PreMed", "PreMed", "NotPM", "NotPM"),
+after = c("PreMed", "NotPM", "PreMed", "NotPM"),
+count = c(29, 21, 6, 34)
+)
+# Turn into a contingency table with weights
+tab <- xtabs(count ~ before + after, data = pm)
+tab
+# Agreement statistics
+mcnemar.test(tab,correct=FALSE)
+```
+Assignment
+```{r}
+prop.test(71, 100, p = 0.5, correct=FALSE)
+```
+
+```{r}
+# Create data frame
+p <- data.frame(
+  firstgen = c("NO", "NO", "YES", "YES"),
+  OUTCOME = c("DID NOT FINISH", "COMPLETE", "DID NOT FINISH", "COMPLETE"),
+  count = c(21, 19, 22, 15)
+)
+
+# Create contingency table (apply weights)
+tab <- xtabs(count ~ firstgen + OUTCOME, data = p)
+tab
+
+# Chi-square test of independence
+cs <- chisq.test(tab)
+cs
+
+# Expected cell counts
+cs$expected
+
+# Fisher's Exact Test
+fisher.test(tab)
+
+# Odds Ratio (Wald method)
+library(epitools)
+oddsratio(tab, method = "wald")
+```
+
+```{r}
+pm <- data.frame(
+before = c("A", "A", "B", "B"),
+after = c("A", "B", "A", "B"),
+count = c(71, 31, 14, 84)
+)
+# Turn into a contingency table with weights
+tab <- xtabs(count ~ before + after, data = pm)
+tab
+# Agreement statistics
+mcnemar.test(tab,correct=FALSE)
 ```
 
 # P-VALUE REJECTION
