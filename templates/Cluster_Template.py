@@ -3,7 +3,11 @@
 import pandas as pd
 df = pd.read_csv("//sdata/susers/tparker27/My Documents/GitHub/work_to_show/Classes Spring 2026/BDA Spring 26/Datasets/Pie ingredients.csv")
 df.head()
+<<<<<<< Updated upstream
 df.columns # ['butter', 'oil', 'rating']
+=======
+df.columns # ['Student', 'Exam', 'Homework']
+>>>>>>> Stashed changes
 #-----------------------------------------------------------------------------
 #%%
 var1 = 'Exam'
@@ -56,5 +60,6 @@ sns.set_palette(customPalette)
 #plot data with seaborn
 facet = sns.lmplot(data=df, x=var1, y=var2, hue='Clusters',
 fit_reg=False, legend=True)
+plt.show()
 
 # %%

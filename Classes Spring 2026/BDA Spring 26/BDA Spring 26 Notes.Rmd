@@ -274,10 +274,67 @@ emm <- emmeans(fit, ~ Treatment)
 pairs(emm)
 emm
 ```
+<<<<<<< Updated upstream
 # Regression
 ```{r}
 # Regression
 house <-read.csv("C:/Users/tyler/OneDrive/Documents/GitHub/work_to_show/Classes Spring 2026/BDA Spring 26/Datasets/housing.csv", header=TRUE)
+=======
+
+# DOE Assignment
+```{r}
+circle <- read.csv("C:/Users/tyler/OneDrive/Documents/GitHub/work_to_show/Classes Spring 2026/BDA Spring 26/Datasets/circle.csv")
+fit<-aov(accidents ~ type + Month,data = circle) # block design
+summary(fit) # primary factor = type, block = month, are significant 
+# install.packages("agricolae")
+library(agricolae)
+duncan_results<-duncan.test(fit,"type",group = TRUE) # duncan mean seperation 
+print(duncan_results)
+# Conclusion: The addition of traffic circles has reduced the number of accidents that have occurred:
+# Type of Intersection: Mean of accidents
+# Circle 6.583a
+# Light 14.167b
+# ab means with different letters were found to be significantly different at the 0.05 level.
+
+# Block Design
+library(agricolae)
+clothing <- read.csv("C:/Users/tyler/OneDrive/Documents/GitHub/work_to_show/Classes Spring 2026/BDA Spring 26/Datasets/clothing.csv")
+fit<-aov(sales ~ sale*product,data = clothing) 
+summary(fit) # sale a product are both signficiant & impacts the sale <2e-16. The main effects of products and sales are also significant
+clothing$ps<-paste(clothing$product,clothing$sale,sep = "") # CREATE PRODUT AND SALES COLUMN  
+fit<-aov(sales~ps,data = clothing) # ANOTHER ANOVA OF SALES ~ PRODUCT SALES COLUMN 
+duncan_results<-duncan.test(fit,"ps", group = TRUE) # do this because of significance. Used to see how 4 means differed. 
+print(duncan_results)
+# conclusion:  Shirts on sale had the highest mean sales, followed by shirts not on sales. Sales of pants were significantly
+# lower than sales of shirts. However, “not on sale” or “on sale” could not be shown to impact pants sales. The
+# differences may be summarized in the visual below:
+# Sale No Sale
+# Shirt $9,801 a $7,760 b
+# Pants $5,871 c $5,753 c
+# ab means with different letters were found to be significantly different at the 0.05 level.
+
+online <- read.csv("C:/Users/tyler/OneDrive/Documents/GitHub/work_to_show/Classes Spring 2026/BDA Spring 26/Datasets/online.csv")
+fit<- lm(FinalGrade~Format+GPA,data=online) # COVARIATE MODEL
+anova(fit) # ANOVA OF FIT gpa and format both sig
+# install.packages("emmeans")
+library(emmeans) 
+emm <- emmeans(fit, ~ Format)
+pairs(emm) # p-value is significant both covariate and format impact the final grade
+emm 
+# Conclusion: The impact of the format of class (online or in a classroom) was found to be significant. The in-person
+# method of instruction significantly increased average final grade (by 9 points on average). The differences can be
+# summarized as follows:
+# Format Final Grade Mean
+# Classroom 79.2 a
+# Online 70.3 b
+# ab means with different letters were found to be significantly different at the 0.05 level.
+```
+# REGRESSION 
+```{r}
+library(tidyverse)
+house <- read.csv("C:/Users/tyler/OneDrive/Documents/GitHub/work_to_show/Classes Spring 2026/BDA Spring 26/Datasets/housing.csv")
+colnames(house)
+>>>>>>> Stashed changes
 head(house)
 model <- lm(saleprice ~ sqft, data = house)
 summary(model)
@@ -287,6 +344,7 @@ abline(model)
 pred_interval <- predict(model, newdata=house, interval="prediction",level = 0.95)
 lines(house$sqft, pred_interval[,2])
 lines(house$sqft, pred_interval[,3])
+<<<<<<< Updated upstream
 ```
 
 ```{r}
@@ -298,6 +356,19 @@ model <- lm(SalePrice ~ SqFt+Age+Location+Lotsize+Condition , data = house2)
 #model <- lm(SalePrice ~ ., data = house2)
 summary(model)
 ```
+=======
+
+
+```
+
+```{r}
+house2 <- read.csv('C:/Users/tyler/OneDrive/Documents/GitHub/work_to_show/Classes Spring 2026/BDA Spring 26/Datasets/housing2.csv', sep = ',')
+head(house2)
+model <- lm(SalePrice ~ SqFt+Age+Location+Lotsize+Condition , data = house2)
+#alternate syntax to include all other columns:
+# model <- lm(SalePrice ~ ., data = house2)
+summary(model)
+>>>>>>> Stashed changes
 
 # Categroical Analysis
 R Code for 1-Sample p-test
@@ -387,6 +458,32 @@ tab <- xtabs(count ~ before + after, data = pm)
 tab
 # Agreement statistics
 mcnemar.test(tab,correct=FALSE)
+```
+
+```{r}
+nuggets <- read.csv('C:/Users/tyler/OneDrive/Documents/GitHub/work_to_show/Classes Spring 2026/BDA Spring 26/Datasets/nuggets.csv', sep = ',')
+nuggets
+
+head(nuggets)
+model <- lm(temp ~ weight, data = nuggets)
+summary(model)
+#below this line “extra” code to provide a visual plot
+plot(nuggets$weight,nuggets$temp)
+abline(model)
+pred_interval <- predict(model, newdata=nuggets, interval="prediction",level = 0.95)
+lines(nuggets$weight, pred_interval[,2])
+lines(nuggets$weight, pred_interval[,3])
+
+```
+
+```{r}
+tendersmr <- read.csv('C:/Users/tyler/OneDrive/Documents/GitHub/work_to_show/Classes Spring 2026/BDA Spring 26/Datasets/tendersmr.csv', sep = ',')
+
+head(tendersmr)
+model <- lm(farmscore ~ Gender+live+tenders , data = tendersmr)
+#alternate syntax to include all other columns:
+# model <- lm(farmscore ~ ., data = tendersmr)
+summary(model)
 ```
 
 # P-VALUE REJECTION
