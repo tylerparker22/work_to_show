@@ -5,7 +5,11 @@ df = pd.read_csv("//sdata/susers/tparker27/My Documents/GitHub/work_to_show/Clas
 df.head()
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 df.columns # ['butter', 'oil', 'rating']
+=======
+df.columns # ['Student', 'Exam', 'Homework']
+>>>>>>> Stashed changes
 =======
 df.columns # ['Student', 'Exam', 'Homework']
 >>>>>>> Stashed changes
