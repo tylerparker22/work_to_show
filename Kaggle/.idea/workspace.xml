@@ -5,14 +5,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ab60a9e3-706a-4ff9-bced-056b6956e622" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/Titanic/junk.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Classes Spring 2026/BDA Spring 26/DOE Assignment.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/../Classes Spring 2026/BDA Spring 26/DOE Assignment.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Classes Spring 2026/BDA Spring 26/BDA Spring 26 Notes.Rmd" beforeDir="false" afterPath="$PROJECT_DIR$/../Classes Spring 2026/BDA Spring 26/BDA Spring 26 Notes.Rmd" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Classes Spring 2026/BDA Spring 26/BDA Spring 26 Notes.nb.html" beforeDir="false" afterPath="$PROJECT_DIR$/../Classes Spring 2026/BDA Spring 26/BDA Spring 26 Notes.nb.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Classes Spring 2026/Econometrics/2-18.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/../Classes Spring 2026/Econometrics/2-18.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Classes Spring 2026/Econometrics/parker.csv" beforeDir="false" afterPath="$PROJECT_DIR$/../Classes Spring 2026/Econometrics/parker.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Classes Spring 2026/Econometrics/parker1.csv" beforeDir="false" afterPath="$PROJECT_DIR$/../Classes Spring 2026/Econometrics/parker1.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Titanic/titanic.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/Titanic/titanic.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Sports/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../Sports/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Classes Spring 2026/Econometrics/3.2.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/../Classes Spring 2026/Econometrics/3.2.ipynb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Sports/juco_baseball.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/../Sports/juco_baseball.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../templates/Cluster_Template.py" beforeDir="false" afterPath="$PROJECT_DIR$/../templates/Cluster_Template.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -37,22 +35,22 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "Python.youtube data kagglehub.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "main",
-    "last_opened_file_path": "C:/Users/tyler/OneDrive/Documents/GitHub/work_to_show/Kaggle",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;Python.youtube data kagglehub.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/tyler/OneDrive/Documents/GitHub/work_to_show/Kaggle&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
@@ -72,6 +70,7 @@
       <workItem from="1772116988660" duration="2892000" />
       <workItem from="1772134254736" duration="30000" />
       <workItem from="1772134309995" duration="964000" />
+      <workItem from="1773329011972" duration="65000" />
     </task>
     <servers />
   </component>
