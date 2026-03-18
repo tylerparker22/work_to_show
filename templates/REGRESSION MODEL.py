@@ -1,8 +1,8 @@
 #REGRESSION MODEL
 #READ DATASET
 import pandas as pd
-df = pd.read_csv("C:/Users/tyler/OneDrive/Documents/BDA/realestate.csv")
-print(df.columns.tolist())
+re = pd.read_csv("C:/Users/tyler/OneDrive/Documents/BDA/realestate.csv")
+re.head()
 #----------------------------------------------------------------------------
 #%%
 #split to training and test datasets

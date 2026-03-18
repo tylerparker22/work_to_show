@@ -1,26 +1,13 @@
 #%%
 #read the data
 import pandas as pd
-df = pd.read_csv("//sdata/susers/tparker27/My Documents/GitHub/work_to_show/Classes Spring 2026/BDA Spring 26/Datasets/Pie ingredients.csv")
+df = pd.read_csv('C:/Users/tyler/OneDrive/Documents/BDA/students.csv')
 df.head()
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-df.columns # ['butter', 'oil', 'rating']
-=======
-df.columns # ['Student', 'Exam', 'Homework']
->>>>>>> Stashed changes
-=======
-df.columns # ['Student', 'Exam', 'Homework']
->>>>>>> Stashed changes
-=======
-df.columns # ['Student', 'Exam', 'Homework']
->>>>>>> Stashed changes
 #-----------------------------------------------------------------------------
 #%%
-var1 = 'Exam'
-var2 = 'Homework'
-Constant = 'Student'
+var1 = 'likes'
+var2 = 'views'
+Constant = 'category'
 
 #k-means
 from sklearn.cluster import KMeans
@@ -52,8 +39,8 @@ print(df)
 #cluster summary
 p1=df.pivot_table(index="cluster",values=[var1,var2],aggfunc="mean")
 p2=df.pivot_table(index="cluster",values=[Constant],aggfunc="count")
-print("Cluster Means /n",p1)
-print("/n /n Number of, {Constant}, per Cluster /n",p2)
+print("Cluster Means \n",p1)
+print("\n \n Number of, {Constant}, per Cluster \n",p2)
 
 #plotting clusters
 import seaborn as sns
@@ -68,6 +55,3 @@ sns.set_palette(customPalette)
 #plot data with seaborn
 facet = sns.lmplot(data=df, x=var1, y=var2, hue='Clusters',
 fit_reg=False, legend=True)
-plt.show()
-
-# %%

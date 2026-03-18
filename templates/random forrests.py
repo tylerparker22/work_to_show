@@ -3,17 +3,12 @@
 #%%
 #import dataset
 import pandas as pd
-test1 = pd.read_csv('https://raw.githubusercontent.com/blacktreeM/econ/refs/heads/main/test.csv')
-test1['year'] = test1['datetime'].str[0:4]  # extract first 4 characters to make year column
-test1['month'] = test1['datetime'].str[5:7]  # extract characters 5:7
-test1['hour'] = test1['datetime'].str[11:13]  # extract characters 11:13
-test1['day'] = pd.to_datetime(test1['datetime']).dt.day_name()
-df=test1
+df = pd.read_csv("C:/Users/tyler/OneDrive/Documents/BDA/web customer.csv")
 df.head()
 #-----------------------------------------------------------------------------
 #%%
-VALUES=['season', 'holiday', 'workingday', 'weather', 'temp', 'atemp', 'humidity', 'windspeed', 'year', 'month', 'hour', 'day']
-TARGET_COL="datetime"
+VALUES=["site1","site2","site3","site4","site5"]
+TARGET_COL="customer"
 #Divide data into train and test sets
 import numpy as np
 np.random.seed(42)
