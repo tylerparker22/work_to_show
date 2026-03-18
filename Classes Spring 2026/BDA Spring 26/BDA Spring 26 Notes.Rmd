@@ -364,12 +364,6 @@ model <- lm(SalePrice ~ SqFt+Age+Location+Lotsize+Condition , data = house2)
 #model <- lm(SalePrice ~ ., data = house2)
 summary(model)
 ```
-=======
-=======
-=======
-
-
-```
 
 ```{r}
 house2 <- read.csv('C:/Users/tyler/OneDrive/Documents/GitHub/work_to_show/Classes Spring 2026/BDA Spring 26/Datasets/housing2.csv', sep = ',')
@@ -570,6 +564,67 @@ model <- lm(farmscore ~ Gender+live+tenders , data = tendersmr)
 #alternate syntax to include all other columns:
 # model <- lm(farmscore ~ ., data = tendersmr)
 summary(model)
+```
+
+R code for Logistic Regression
+```{r}
+p <- data.frame(
+method = c("A", "A", "B", "B"),
+quality = c("Good", "Defective", "Good", "Defective"),
+count = c(75, 25, 87, 13)
+)
+# Convert quality to a factor, with "Defective" as the reference
+p$quality <- factor(p$quality, levels = c("Defective", "Good"))
+model <- glm(quality ~ method,
+data = p,
+family = binomial,
+weights = count)
+#global model test:
+null_model<-glm(quality~1, family=binomial, data=p,
+weights = count)
+anova(null_model,model,test="Chisq")
+summary(model)
+exp(cbind(OR = coef(model), confint(model)))
+```
+R Code for Multiple Logistic Regression
+```{r}
+head(ps)
+model <- glm(Purchase~Configuration+Size,
+             data = ps,
+             family = binomial)
+summary(model)
+null_model<-glm(Purchase~1, family=binomial, data=ps)
+anova(null_model,model,test="Chisq")
+summary(model)
+exp(cbind(OR = coef(model), confint(model)))
+levels(ps$Purchase)
+```
+Changing of ref level
+```{r}
+ps$Configuration <- relevel(ps$Configuration, ref = "C")
+model <- glm(Purchase~Configuration+Size,
+data = ps,
+family = binomial)
+summary(model)
+null_model<-glm(Purchase~1, family=binomial, data=ps)
+anova(null_model,model,test="Chisq")
+summary(model)
+exp(cbind(OR = coef(model), confint(model)))
+levels(ps$Purchase)
+```
+R code for logistic regression
+```{r}
+actbda <-read.csv("C:/Users/tyler/OneDrive/Documents/GitHub/work_to_show/Classes Spring 2026/BDA Spring 26/Datasets/actbda.csv", header=TRUE)
+head(actbda)
+actbda$BDAsuccess<-factor(actbda$BDAsuccess)
+model <- glm(BDAsuccess~ ACT,
+data = actbda,
+family = binomial)
+null_model<-glm(BDAsuccess~1, family=binomial,
+data=actbda)
+anova(null_model,model,test="Chisq")
+summary(model)
+exp(cbind(OR = coef(model), confint(model)))
 ```
 
 # P-VALUE REJECTION
