@@ -199,7 +199,7 @@ summary(fit)
 duncan_results <- duncan.test(fit, "brand", group = TRUE)
 print(duncan_results)
 ```
-# Scenario
+# 2x2 Factorial
 ```{r}
 s1<-read.csv("C:/Users/tyler/OneDrive/Documents/GitHub/work_to_show/Classes Spring 2026/BDA Spring 26/Datasets/s1 full factorial.csv",header=TRUE)
 head(s1)
@@ -263,9 +263,10 @@ print(duncan_results)
 # Covariate Example
 dbp<-read.csv("C:/Users/tyler/OneDrive/Documents/GitHub/work_to_show/Classes Spring 2026/BDA Spring 26/Datasets/dbp data for covariate.csv",header=TRUE)
 head(dbp)
-dbp$Treatment <- as.factor(dbp$Treatment)
+dbp$Treatment <- as.factor(dbp$Treatment) # treatment as factors
+# fit <- lm(col_find ~ factor1 + factor2, data = df)
 fit <- lm(DBP ~ Treatment + Weight, data = dbp)
-anova(fit)
+anova(fit) # anova table
 
 ## Covariate follow-up
 #install.packages("emmeans") # run once, if not installed
@@ -274,12 +275,6 @@ emm <- emmeans(fit, ~ Treatment)
 pairs(emm)
 emm
 ```
-<<<<<<< Updated upstream
-# Regression
-```{r}
-# Regression
-house <-read.csv("C:/Users/tyler/OneDrive/Documents/GitHub/work_to_show/Classes Spring 2026/BDA Spring 26/Datasets/housing.csv", header=TRUE)
-=======
 
 # DOE Assignment
 ```{r}
@@ -334,13 +329,7 @@ emm
 library(tidyverse)
 house <- read.csv("C:/Users/tyler/OneDrive/Documents/GitHub/work_to_show/Classes Spring 2026/BDA Spring 26/Datasets/housing.csv")
 colnames(house)
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
+
 head(house)
 model <- lm(saleprice ~ sqft, data = house)
 summary(model)
@@ -350,9 +339,7 @@ abline(model)
 pred_interval <- predict(model, newdata=house, interval="prediction",level = 0.95)
 lines(house$sqft, pred_interval[,2])
 lines(house$sqft, pred_interval[,3])
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
+
 ```
 
 ```{r}
@@ -363,6 +350,13 @@ model <- lm(SalePrice ~ SqFt+Age+Location+Lotsize+Condition , data = house2)
 #alternate syntax to include all other columns:
 #model <- lm(SalePrice ~ ., data = house2)
 summary(model)
+
+house2 <- read.csv('C:/Users/tyler/OneDrive/Documents/GitHub/work_to_show/Classes Spring 2026/BDA Spring 26/Datasets/housing2.csv', sep = ',')
+head(house2)
+model <- lm(SalePrice ~ SqFt+Age+Location+Lotsize+Condition , data = house2)
+#alternate syntax to include all other columns:
+# model <- lm(SalePrice ~ ., data = house2)
+summary(model)
 ```
 
 ```{r}
@@ -372,9 +366,6 @@ model <- lm(SalePrice ~ SqFt+Age+Location+Lotsize+Condition , data = house2)
 #alternate syntax to include all other columns:
 # model <- lm(SalePrice ~ ., data = house2)
 summary(model)
->>>>>>> Stashed changes
-
-
 ```
 
 ```{r}
@@ -384,26 +375,12 @@ model <- lm(SalePrice ~ SqFt+Age+Location+Lotsize+Condition , data = house2)
 #alternate syntax to include all other columns:
 # model <- lm(SalePrice ~ ., data = house2)
 summary(model)
->>>>>>> Stashed changes
 
-
-```
-
-```{r}
-house2 <- read.csv('C:/Users/tyler/OneDrive/Documents/GitHub/work_to_show/Classes Spring 2026/BDA Spring 26/Datasets/housing2.csv', sep = ',')
-head(house2)
-model <- lm(SalePrice ~ SqFt+Age+Location+Lotsize+Condition , data = house2)
-#alternate syntax to include all other columns:
-# model <- lm(SalePrice ~ ., data = house2)
-summary(model)
->>>>>>> Stashed changes
 
 # Categroical Analysis
-R Code for 1-Sample p-test
-```{r}
 prop.test(39, 60, p = 0.5, correct=FALSE)
 ```
-R code for 2-Proportion Test (Contingency Table and Odds Ratio)
+# R code for 2-Proportion Test (Contingency Table and Odds Ratio)
 ```{r}
 # Create data frame
 p <- data.frame(
@@ -430,7 +407,7 @@ fisher.test(tab)
 library(epitools)
 oddsratio(tab, method = "wald")
 ```
-McNemar’s Test for Matched Pairs Proportions
+# McNemar’s Test for Matched Pairs Proportions
 ```{r}
 pm <- data.frame(
 before = c("PreMed", "PreMed", "NotPM", "NotPM"),
@@ -443,7 +420,7 @@ tab
 # Agreement statistics
 mcnemar.test(tab,correct=FALSE)
 ```
-Assignment
+# Assignment
 ```{r}
 prop.test(71, 100, p = 0.5, correct=FALSE)
 ```
@@ -566,7 +543,7 @@ model <- lm(farmscore ~ Gender+live+tenders , data = tendersmr)
 summary(model)
 ```
 
-R code for Logistic Regression
+# R code for Logistic Regression
 ```{r}
 p <- data.frame(
 method = c("A", "A", "B", "B"),
