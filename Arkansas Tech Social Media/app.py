@@ -52,7 +52,7 @@ df["len_words"] = df["Description"].apply(lambda x: len(x.split()))
 # -----------------------------
 # Clustering
 # -----------------------------
-kmeans = KMeans(n_clusters=4, random_state=42)
+kmeans = KMeans(n_clusters=3, random_state=42)
 df["cluster"] = kmeans.fit_predict(df[numeric_cols])
 
 # -----------------------------
