@@ -603,6 +603,210 @@ anova(null_model,model,test="Chisq")
 summary(model)
 exp(cbind(OR = coef(model), confint(model)))
 ```
+Regression for prediction
+```{r}
+# R Code to set up the cross-validation
+house <-read.csv("C:/Users/tyler/OneDrive/Documents/GitHub/work_to_show/Classes Spring 2026/BDA Spring 26/Datasets/housing.csv", header=TRUE)
+head(house)
+colnames(house) # "sqft"      "saleprice"
+# install.packages("caret") #only needs to be installed once
+library(caret)
+ 
+#we set a seed so that the random sampling will be repeatable
+set.seed(42)
+ 
+# Set up 5-fold cross-validation
+train_control <- trainControl(method = "cv",number = 5)
+ 
+# fit the model
+model <- train(saleprice ~sqft, data = house,
+               method = "lm",
+               trControl = train_control)
+
+# Evaluating the model
+print(model)
+
+# Linear Regression 
+# 
+# 60 samples
+#  1 predictor
+# 
+# No pre-processing
+# Resampling: Cross-Validated (5 fold) 
+# Summary of sample sizes: 48, 48, 48, 48, 48 
+# Resampling results:
+# 
+#   RMSE          # Mult RMSE x2 to get +- how off it is. 
+#   8162.942  
+
+# Rsquared
+# 0.960561  
+
+# MAE # MAE how on average you are wrong. 
+# 6015.2
+
+summary(model)
+
+# Call:
+# lm(formula = .outcome ~ ., data = dat)
+# 
+# Residuals: Residual information that we will ignore because we will look at a plot that will tell us more than this
+#    Min     1Q Median     3Q    Max 
+# -20448  -3536  -2110   2285  21115 
+# 
+# Coefficients: These are the coefficients (or slope and intercept) of our regression model The values to the right with *** next to it, signify that the slope and intercept are significant
+
+#               Estimate Std. Error t value
+# (Intercept) -31246.873   3485.634  -8.964
+# sqft            78.812      2.221  35.483
+#             Pr(>|t|)    
+# (Intercept) 1.52e-12 ***
+# sqft         < 2e-16 ***
+# ---
+# Signif. codes:  
+# 0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+# 
+# Residual standard error: 8030 on 58 degrees of freedom
+# Multiple R-squared:  0.956,	Adjusted R-squared:  0.9552 
+# F-statistic:  1259 on 1 and 58 DF,  p-value: < 2.2e-16
+
+# ================================================
+# ***The p-value of the F-statistics also tells us the regression model is significant***
+# ================================================
+
+regmodel<-lm(saleprice~sqft,data=house)
+plot(house$sqft,house$saleprice)
+abline(regmodel)
+pred_interval <- predict(regmodel, newdata=house, interval="prediction",level = 0.95)
+lines(house$sqft, pred_interval[,2])
+lines(house$sqft, pred_interval[,3])
+
+# make a prediction
+newdata=data.frame(sqft=
+                     1400 # make the prediction within the range 
+                   )
+predict(regmodel,newdata=newdata,interval="prediction",level=0.95) 
+
+# ================================================
+# This code gives the predicted sale price for a square footage of 1400
+# It gives our best estimate for the sale price and then a lower and upper bound for two sale prices we are 95% sure the true sale price will be between.
+# 
+# What sqft values is the model valid for?
+# Use the following to see the min and max values of sqft:
+# 
+# summary(house)
+# 
+# The model can be used for values between 620 and 3410 square feet.
+# ================================================
+```
+```{r}
+df <- read.csv("C:/Users/tyler/OneDrive/Documents/GitHub/work_to_show/Classes Spring 2026/BDA Spring 26/Datasets/tenders.csv")
+
+head(df)
+colnames(df) # "live"    "tenders"
+# install.packages("caret") #only needs to be installed once
+library(caret)
+ 
+#we set a seed so that the random sampling will be repeatable
+set.seed(42)
+ 
+# Set up 5-fold cross-validation
+train_control <- trainControl(method = "cv",number = 5)
+ 
+# fit the model
+model <- train(tenders ~live, data = df,
+               method = "lm",
+               trControl = train_control)
+
+# Evaluating the model
+print(model)
+
+# Linear Regression 
+# 
+# 77 samples
+#  1 predictor
+# 
+# No pre-processing
+# Resampling: Cross-Validated (5 fold) 
+# Summary of sample sizes: 63, 61, 61, 62, 61 
+# Resampling results:
+# 
+#   RMSE      Rsquared   MAE     
+#   9.198435  0.8049075  7.386984
+# 
+# Tuning parameter 'intercept' was held constant
+#  at a value of TRUE
+
+# summary(model)
+# 
+# Call:
+# lm(formula = .outcome ~ ., data = dat)
+# 
+# Residuals:
+#      Min       1Q   Median       3Q      Max 
+# -19.7853  -4.7827   0.2867   6.1831  20.5290 
+# 
+# Coefficients:
+#              Estimate Std. Error t value Pr(>|t|)    
+# (Intercept) 14.519579   6.639455   2.187   0.0319 *  
+# live         0.035215   0.002162  16.288   <2e-16 ***
+# ---
+# Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+# 
+# Residual standard error: 9.148 on 75 degrees of freedom
+# Multiple R-squared:  0.7796,	Adjusted R-squared:  0.7767 
+# F-statistic: 265.3 on 1 and 75 DF,  p-value: < 2.2e-16
+
+# ================================================
+# ***The p-value of the F-statistics also tells us the regression model is significant***
+# ================================================
+
+regmodel<-lm(tenders~live,data=df)
+plot(df$live,df$tenders)
+abline(regmodel)
+pred_interval <- predict(regmodel, newdata=df, interval="prediction",level = 0.95)
+lines(df$live, pred_interval[,2])
+lines(df$live, pred_interval[,3])
+
+summary(df) # see min and max
+# make a prediction
+newdata=data.frame(live=
+                     2260 # make the prediction within the range 
+                   )
+predict(regmodel,newdata=newdata,interval="prediction",level=0.95) 
+
+# ================================================
+# This code gives the predicted sale price for a square footage of 1400
+# It gives our best estimate for the sale price and then a lower and upper bound for two sale prices we are 95% sure the true sale price will be between.
+# 
+# What live values is the model valid for?
+# Use the following to see the min and max values of live:
+# 
+
+# summary(df)
+
+# 
+# The model can be used for values between 620 and 3410 square feet.
+# ================================================
+```
+
+```{r}
+# read in program
+house2 <- read.csv("C:/Users/tyler/OneDrive/Documents/GitHub/work_to_show/Classes Spring 2026/BDA Spring 26/Datasets/housing2.csv")
+head(house2)
+colnames(house2)
+library(caret)
+set.seed(42)
+train_control <- trainControl(method = "cv",number = 5)
+model <- train(SalePrice ~., data = house2, method = "lm", trControl =
+train_control)
+print(model)
+summary(model)
+regmodel<-lm(SalePrice~.,data=house2)
+summary(house2) #to see max and min of inputs
+newdata=data.frame(SqFt=1400,Age=4,Lotsize=.5)
+predict(regmodel,newdata=newdata,interval="prediction",level=0.95)
+```
 
 # P-VALUE REJECTION
 ```{r P-VALUE REJECTION, echo=TRUE, message=TRUE, warning=TRUE, paged.print=TRUE}
