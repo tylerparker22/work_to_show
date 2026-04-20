@@ -1,0 +1,58 @@
+-- SQL Queries to Keep
+
+=======================================================
+--UNION ALL
+SELECT
+    "Post ID",
+    "Account ID",
+    "Account username",
+    "Account name",
+    "Description",
+    "Duration (sec)",
+    "Publish time",
+    "Permalink",
+    "Post type",
+    "Data comment",
+    "Date",
+    "Views",
+    "Likes",
+    "Shares",
+    "Comments",
+    "Saves",
+    "Reach",
+    "Follows",
+    NULL AS "Replies",
+    NULL AS "Navigation",
+    NULL AS "Profile visits",
+    NULL AS "Sticker taps",
+    NULL AS "Link clicks"
+FROM "Post"
+
+UNION ALL
+
+SELECT
+    "Post ID",
+    "Account ID",
+    "Account username",
+    "Account name",
+    "Description",
+    "Duration (sec)",
+    "Publish time",
+    "Permalink",
+    "Post type",
+    "Data comment",
+    "Date",
+    "Views",
+    "Likes",
+    "Shares",
+    NULL AS "Comments",
+    NULL AS "Saves",
+    "Reach",
+    "Follows",
+    "Replies",
+    "Navigation",
+    "Profile visits",
+    "Sticker taps",
+    "Link clicks"
+FROM "Story";
+=======================================================
