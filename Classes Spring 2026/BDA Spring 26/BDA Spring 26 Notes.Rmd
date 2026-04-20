@@ -807,6 +807,626 @@ summary(house2) #to see max and min of inputs
 newdata=data.frame(SqFt=1400,Age=4,Lotsize=.5)
 predict(regmodel,newdata=newdata,interval="prediction",level=0.95)
 ```
+R for Logistic Regression
+```{r}
+# R for Logistic Regression
+# example 1
+stu <-read.csv("C:/Users/tyler/OneDrive/Documents/GitHub/work_to_show/Classes Spring 2026/BDA Spring 26/Datasets/student success (2).csv", header=TRUE)
+head(stu)
+stu$success<-factor(stu$success)
+set.seed(23)
+R=runif(nrow(stu)) #create a random uniform column the length of our table
+stu$R=R #add the random numbers to our table
+train<-stu[stu$R<=.6,] #select roughly 60% for training
+test<-stu[stu$R>.6,] #the other 40% gets placed in test
+train<-subset(train,select=-c(R)) #remove the column R
+test<-subset(test,select=-c(R)) #remove the column R
+
+# log regression
+lreg<-glm(success~FinalGrade1403+Transfer+ACT_Score+ACT_Math+HS_GPA, data=train, family=binomial)
+summary(lreg)
+
+# predict model
+pmodel<- predict(lreg,newdata=test, type = "response")
+
+model<- ifelse(pmodel > 0.5, "yes", "no") #turn the probability into a pred
+known<-test["success"]
+knownt<-t(known)
+table(knownt,model)
+newdata=data.frame(FinalGrade1403=87,Transfer="yes",ACT_Score=26,ACT_Math=25,HS_GPA=3.9)
+predict(lreg, newdata = newdata, type = "response") 
+ifelse(predict(lreg, newdata = newdata, type = "response")>.5, "yes", "no")
+```
+```{r}
+# R for Logistic Regression
+# example 2
+appt <-read.csv("C:/Users/tyler/OneDrive/Documents/GitHub/work_to_show/Classes Spring 2026/BDA Spring 26/Datasets/appt (1).csv", header=TRUE)
+head(appt) # SHOW DATA 
+appt$MissedAppt<-factor(appt$MissedAppt) # TREATE AS FACTOR
+set.seed(23) # SET THE SEED
+R=runif(nrow(appt)) #create a random uniform column the length of our table
+appt$R=R #add the random numbers to our table
+train<-appt[appt$R<=.6,] #the other 40% gets placed in test
+test<-appt[appt$R>.6,] #the other 40% gets placed in test
+train<-subset(train,select=-c(R)) #remove the column R
+test<-subset(test,select=-c(R)) #remove the column R
+lreg<-glm(MissedAppt~., data=train, family=binomial)
+summary(lreg)
+pmodel<- predict(lreg,newdata=test, type = "response")
+model<- ifelse(pmodel > 0.5, "yes", "no") 
+known<-test["MissedAppt"]
+knownt<-t(known)
+table(knownt,model)
+library(pROC)
+test_prob = predict(lreg, newdata = test, type = "response")
+test_roc = roc(test$MissedAppt ~ test_prob, plot = TRUE, print.auc = TRUE)
+
+# ACCURACY OF THE MODEL
+ACCURACY = (156 + 535) / (156 + 154 + 51 + 535)
+ACCURACY
+
+# MAKE THE PREDICITON 
+predict_data=data.frame(PrevMissedAppt="no",
+                   SameDayAppt="yes", 
+                   Age=47, Male="yes", 
+                   White="yes", 
+                   WaitTime=30, 
+                   Monday="yes", 
+                   Tuesday="no", 
+                   Thursday="no", 
+                   Friday="no", 
+                   Saturday="no"
+                  )
+predict(lreg, # logistic regression
+        predict_data, # prediction dataframe 
+        type = "response") # greater than .5 they are going to miss 
+
+#Since this is greater than 0.5, the prediction is “yes” the appointment will be missed
+ifelse(predict(lreg,
+               newdata = predict_data, 
+               type = "response")
+       >.5, 
+       "yes", # >.5 going to miss 
+       "no" # <.5 not going to miss 
+      )
+```
+# CLASSIFICATION MODELS
+
+LOGISIC REGRESSION
+```{r}
+target <- "Survived"
+df <-read.csv("C:/Users/tyler/OneDrive/Documents/GitHub/work_to_show/Classes Spring 2026/BDA Spring 26/Datasets/titanic.csv", header=TRUE)
+head(df)
+colnames(df) # 'Class''Age''Gender''Survived'
+df$Survived<-factor(df$Survived) # make success a factor
+# -----------------------------------------------------------------------------
+# divide into train and test data
+set.seed(23)
+R=runif(nrow(df)) #create a random uniform column the length of our table
+df$R=R #add the random numbers to our table
+train<-df[df$R<=.6,] #select roughly 60% for training
+test<-df[df$R>.6,] #the other 40% gets placed in test
+train<-subset(train,select=-c(R)) #remove the column R
+test<-subset(test,select=-c(R)) #remove the column R
+
+# MAKE A PREDICTION 
+
+# 'Class''Age''Gender''Survived'
+
+predict_data=data.frame(
+
+Class=3, 
+
+Age=18,
+
+Gender="F"
+
+)
+
+lreg<-glm(Survived~., data=train, family=binomial)
+
+summary(lreg)
+
+pmodel<- predict(lreg,newdata=test, type = "response")
+
+model<- ifelse(pmodel > 0.5, "yes", "no") 
+
+known<-test["Survived"]
+
+knownt<-t(known)
+
+table(knownt,model)
+
+library(pROC)
+
+test_prob = predict(lreg, newdata = test, type = "response")
+
+test_roc = roc(test$Survived ~ test_prob, plot = TRUE, print.auc = TRUE)
+
+# =====================================================================
+
+# ACCURACY OF THE MODEL
+
+n_n <- 160
+
+n_y <- 41
+
+y_n <-31
+
+y_y <- 88
+
+ACCURACY <- (n_n + y_y) / (n_n + n_y + y_n + y_y)
+
+ACCURACY
+
+# =====================================================================
+
+# unique numbers to help with prediction
+
+unique(df$Class)
+
+unique(df$Age)
+
+unique(df$Gender)
+
+# =====================================================================
+
+# MAKE A PREDICTION 
+
+# 'Class''Age''Gender''Survived'
+
+predict(lreg, # logistic regression
+
+predict_data, # prediction dataframe 
+
+type = "response") # greater than .5 they are going to miss 
+
+# =====================================================================
+
+# if else statement to help put a name to the number
+
+ifelse(predict(lreg,
+
+newdata = predict_data, 
+
+type = "response")
+
+>.5, 
+
+"survived", # >.5 going to survive 
+
+"did not survive" # <.5 not going to survive
+
+)
+
+# c1
+no_no <- 160
+no_yes <- 41
+# c2
+yes_no <- 31
+yes_yes <-88
+
+accuracy_lr <- (no_no + yes_yes) / (no_no + no_yes + yes_no + yes_yes)
+round(accuracy_lr,2)
+error_rate_lr <- (yes_no + no_yes) / (no_no + no_yes + yes_no + yes_yes)
+round(error_rate_lr,2)
+true_no_rate_lr <- no_no / (no_no + no_yes)
+round(true_no_rate_lr,2)
+true_yes_rate_lr <- yes_yes / (yes_no + yes_yes)
+round(true_yes_rate_lr,2)
+```
+
+CLASS TREE
+```{r}
+target <- "Survived"
+df <-read.csv("C:/Users/tyler/OneDrive/Documents/GitHub/work_to_show/Classes Spring 2026/BDA Spring 26/Datasets/titanic.csv", header=TRUE)
+head(df)
+colnames(df) # 'Class''Age''Gender''Survived'
+df$Survived<-factor(df$Survived) # make success a factor
+# -----------------------------------------------------------------------------
+# divide into train and test data
+set.seed(23)
+R=runif(nrow(df)) #create a random uniform column the length of our table
+df$R=R #add the random numbers to our table
+train<-df[df$R<=.6,] #select roughly 60% for training
+test<-df[df$R>.6,] #the other 40% gets placed in test
+train<-subset(train,select=-c(R)) #remove the column R
+test<-subset(test,select=-c(R)) #remove the column R
+
+# MAKE A PREDICTION 
+
+# 'Class''Age''Gender''Survived'
+
+predict_data=data.frame(
+
+Class=3, 
+
+Age=18,
+
+Gender="F"
+
+)
+
+# class tree
+#install.packages('rpart', dependencies = TRUE)
+#install.packages('rpart.plot', dependencies = TRUE)
+library(rpart)
+library(rpart.plot)
+#can’t use success~. due to extra columns in train:
+ctree<-rpart(Survived~.,data=train)
+#summary(ctree)
+#plot the tree, type=4 labels splits and the nodes, extra=101 adds extra calculations in each node
+rpart.plot(ctree, type = 4, extra = 101)
+
+# fit the model to the testing data
+model<- predict(ctree, newdata=test, type = "class")
+known<-test[target] #extract the actual value of success for comparing
+knownt<-t(known) #transpose the data for the confusion matrix
+table(knownt,model) #create the confusion matrix
+
+# interpreting the output CLASS TREE
+# c1
+no_no <- 166
+no_yes <- 43
+# c2
+yes_no <- 25
+yes_yes <-86
+
+accuracy_tree <- (no_no + yes_yes) / (no_no + no_yes + yes_no + yes_yes)
+round(accuracy_tree,2)
+error_rate_tree <- (yes_no + no_yes) / (no_no + no_yes + yes_no + yes_yes)
+round(error_rate_tree,2)
+true_no_rate_tree <- no_no / (no_no + no_yes)
+round(true_no_rate_tree,2)
+true_yes_rate_tree <- yes_yes / (yes_no + yes_yes)
+round(true_yes_rate_tree,2)
+
+#predict with the classification tree
+predict(ctree,newdata=predict_data,type="class")
+```
+RANDOM FORREST
+```{r}
+target <- "Survived"
+df <-read.csv("C:/Users/tyler/OneDrive/Documents/GitHub/work_to_show/Classes Spring 2026/BDA Spring 26/Datasets/titanic.csv", header=TRUE)
+head(df)
+colnames(df) # 'Class''Age''Gender''Survived'
+df$Survived<-factor(df$Survived) # make success a factor
+# -----------------------------------------------------------------------------
+# divide into train and test data
+set.seed(23)
+R=runif(nrow(df)) #create a random uniform column the length of our table
+df$R=R #add the random numbers to our table
+train<-df[df$R<=.6,] #select roughly 60% for training
+test<-df[df$R>.6,] #the other 40% gets placed in test
+train<-subset(train,select=-c(R)) #remove the column R
+test<-subset(test,select=-c(R)) #remove the column R
+
+# MAKE A PREDICTION 
+
+# 'Class''Age''Gender''Survived'
+
+predict_data=data.frame(
+
+Class=3, 
+
+Age=18,
+
+Gender="F"
+
+)
+
+# random forrest
+library(randomForest)
+set.seed(23) #needed to make the RF repeatable
+RFM=randomForest(Survived~.,data=train)
+#summary(RFM)
+
+# fit model to testing data
+model<- predict(RFM, newdata=test, type = "class")
+known<-test[target] #extract the actual value of success for comparing
+knownt<-t(known) #transpose the data for the confusion matrix
+table(knownt,model) #create the confusion matrix
+
+# fine tune the model
+set.seed(23)
+RFM=randomForest(Survived~.,data=train,
+mtry=4,ntrees=1000)
+model<- predict(RFM, newdata=test, type = "class")
+known<-test[target] #extract the actual value of success for comparing
+knownt<-t(known) #transpose the data for the confusion matrix
+table(knownt,model) #create the confusion matrix
+
+# interpreting the output random forrest
+# c1
+no_no <- 151
+no_yes <- 36
+# c2
+yes_no <- 40
+yes_yes <- 93
+
+accuracy_rf <- (no_no + yes_yes) / (no_no + no_yes + yes_no + yes_yes)
+round(accuracy_rf,2)
+error_rate_rf <- (yes_no + no_yes) / (no_no + no_yes + yes_no + yes_yes)
+round(error_rate_rf,2)
+true_no_rate_rf <- no_no / (no_no + no_yes)
+round(true_no_rate_rf,2)
+true_yes_rate_rf <- yes_yes / (yes_no + yes_yes)
+round(true_yes_rate_rf,2)
+
+# predict w/ rf
+predict(RFM, newdata = predict_data, type = "class")
+```
+ANN
+```{r}
+target <- "Survived"
+df <-read.csv("C:/Users/tyler/OneDrive/Documents/GitHub/work_to_show/Classes Spring 2026/BDA Spring 26/Datasets/titanic.csv", header=TRUE)
+head(df)
+colnames(df) # 'Class''Age''Gender''Survived'
+df$Survived<-factor(df$Survived) # make success a factor
+# -----------------------------------------------------------------------------
+# divide into train and test data
+set.seed(23)
+R=runif(nrow(df)) #create a random uniform column the length of our table
+df$R=R #add the random numbers to our table
+train<-df[df$R<=.6,] #select roughly 60% for training
+test<-df[df$R>.6,] #the other 40% gets placed in test
+train<-subset(train,select=-c(R)) #remove the column R
+test<-subset(test,select=-c(R)) #remove the column R
+
+# MAKE A PREDICTION 
+
+# 'Class''Age''Gender''Survived'
+
+predict_data=data.frame(
+
+Class=3, 
+
+Age=18,
+
+Gender="F"
+
+)
+
+# ann
+#install.packages("nnet")
+library(nnet)
+set.seed(17)
+ANN<-nnet(Survived~.,data=train, size=4)
+
+model<- predict(ANN, newdata=test, type = "class")
+known<-test[target] #extract the actual value of success for comparing
+knownt<-t(known) #transpose the data for the confusion matrix
+table(knownt,model) #create the confusion matrix
+
+# interpret the model
+# c1
+no_no <- 169
+no_yes <- 42
+# c2
+yes_no <- 22
+yes_yes <- 87
+
+accuracy_ann <- (no_no + yes_yes) / (no_no + no_yes + yes_no + yes_yes)
+round(accuracy_ann,2)
+error_rate_ann <- (yes_no + no_yes) / (no_no + no_yes + yes_no + yes_yes)
+round(error_rate_ann,2)
+true_no_rate_ann <- no_no / (no_no + no_yes)
+round(true_no_rate_ann,2)
+true_yes_rate_ann <- yes_yes / (yes_no + yes_yes)
+round(true_yes_rate_ann,2)
+
+# ann prediction
+predict(ANN,newdata=predict_data, type="class")
+```
+
+ACCURACY OF CLASS MODELS
+```{r}
+cat("ACCURACY: ", "rf ", round(accuracy_rf,2), 
+    " tree ", round(accuracy_tree,2),
+    " ann ", round(accuracy_ann,2),
+    "lr ", round(accuracy_lr,2))
+
+accuracies <- c(
+    "Random Forest" = accuracy_rf,
+    "Decision Tree" = accuracy_tree,
+    "ANN" = accuracy_ann,
+    "Log Regression" = accuracy_lr
+)
+
+best_model <- names(which.max(accuracies))
+print(best_model)
+```
+
+# VAR SELECTION
+
+Example 1
+The file “product survey.csv” are data from 40 different products from the same product category for a large online retail company. The column “sales” is the average weekly sales of each item. Columns, “color”, “size”, “features”, “reliability”, “warranty”, and “cost” are the average scores from product surveys that ask about the customer’s satisfaction with each aspect of the product. A score closer to 10 indicates a higher average customer satisfaction for each item. Determine the best subset of variables to predict sales.
+```{r}
+# Stepwise Regression using AIC
+ps <-read.csv("C:/Users/tyler/OneDrive/Documents/GitHub/work_to_show/Classes Spring 2026/BDA Spring 26/Datasets/product survey (3).csv", header=TRUE)
+head(ps)
+# install.packages("MASS")
+library(MASS)
+step_model <- stepAIC(lm(Sales ~ ., data = ps), direction = "both", trace = FALSE)
+# Print the selected variables
+print(step_model$anova)
+
+cat(
+"  *****The final variables selected were: Size, Features, Reliability, and Cost*****
+  *****Color and Warranty were not selected*****"
+)
+
+# Random Forest
+library(randomForest)
+RFM=randomForest(Sales~.,data=ps, importance=TRUE)
+importance(RFM)
+varImpPlot(RFM)
+
+cat(
+"  Importance using MSE is given in the first graph; importance using Node Purity is given in the second—either could be used to determine which variables are most useful for building a model
+
+One of the drawbacks to using Random Forests for variable selection is that, while variables are ranked by importance, there is no clear “cut-off” for where to stop including variables (it is left up to analyst to say where to stop including variables)
+
+However, in this case, warrant and color are less than 0 on %IncMSE, clearly indicating they should not be used."
+)
+
+# Lasso Regression
+# Note these variables are all on the same scale, so no standardization is needed.
+# install.packages("gamlr")
+library(gamlr)
+modMat<-model.matrix(~Color+Size+Features+Reliability+Warranty+Cost, data=ps)
+fit<-gamlr(x=modMat,y=ps$Sales)
+plot(fit)
+coef(fit)
+
+cat(
+  "8 x 1 sparse Matrix of class dgCMatrix
+                seg67
+intercept   3338.6351
+(Intercept)    .     <- Dot indicates not selected
+Color          .     <- Dot indicates not selected
+Size         302.2088
+Features     365.7851
+Reliability  382.6246
+Warranty       .     <- Dot indicates not selected
+Cost        1041.1788
+
+The regularization path image can be nice to see,
+however it is the output above that tells us Color
+and Warranty should not be selected. (Both have
+dots instead of parameter estimates)"
+)
+
+cat(
+"  # Summary example 1
+• All three methods of variable selection agreed that Color and
+Warranty should not be used in the model
+
+• The process for building the final model would now begin using just
+the selected columns: Size, Features, Reliability, and Cost"
+)
+```
+# Example 2
+The file “irs2.csv” contains data from past US Internal Revenue Service audits. In an effort to more efficiently audit only those returns most likely to have violated tax laws, the columns in the file irs2.csv are:
+
+• cheated: "yes" if the audit found the return violated tax laws, otherwise "no" -- this is the target
+variable we are building the model to predict
+
+• married: "yes" if the return is for a married individual; "no" for single
+
+• dependents: "yes" if the return is for an individual claiming dependents; "no" otherwise
+
+• incomeOver100K: "yes" if the income of the individual exceeds $100,000
+
+• return: "yes" if the individual received a return ("no" if a the individual did not receive a return or
+had to pay in)
+
+• Largedonation: “yes” if the individual made a donation in excess of 10% of their annual income,
+no otherwise
+
+• mathErrors: “yes”: if there were math errors in the return, “no” otherwise
+
+• filedLate: "yes" if the return was filed late, "no" if filed early or on time
+
+• Over4DeductClaimed: "yes" if over 4 deductions were claimed, "no" if 4 or less
+
+```{r}
+irs <-read.csv("C:/Users/tyler/OneDrive/Documents/GitHub/work_to_show/Classes Spring 2026/BDA Spring 26/Datasets/irs2.csv", header=TRUE)
+# head(irs)
+# ==============================================
+# An extra step is required for stepwise selection for categorical data, to turn the “yes” and “no”s into 1’s and 0’s (called dummy variables or indicator variables)
+# ==============================================
+# Dummy code categorical predictor variables
+irsdum <- model.matrix(~., irs)[,-1]
+irsdum<-data.frame(irsdum)
+head(irsdum)
+#install.packages("MASS")
+library(MASS)
+step_model <- stepAIC(lm(cheatedyes ~ ., data = irsdum, family=binomial), direction = "both", trace = FALSE)
+# Print the selected variables
+print(step_model$anova)
+
+cat(
+  "Stepwise Model Path 
+Analysis of Deviance Table
+
+Initial Model:
+cheatedyes ~ marriedyes + dependentsyes + incomeOver100Kyes + 
+    returnyes + largedonationyes + mathErrorsyes + filedLateyes + 
+    Over4DeductClaimedyes
+
+Final Model:
+cheatedyes ~ marriedyes + incomeOver100Kyes + returnyes + filedLateyes + 
+    Over4DeductClaimedyes
+
+
+                Step Df    Deviance Resid. Df Resid. Dev       AIC
+1                                         477   41.48767 -1177.955
+2    - dependentsyes  1 0.006368431       478   41.49404 -1179.880
+3    - mathErrorsyes  1 0.010191336       479   41.50423 -1181.761
+4 - largedonationyes  1 0.078835478       480   41.58306 -1182.839
+
+• The variables married, incomeOver100, return, filedLate, and Over4DeductClaim were selected. (Depedents, mathErrors, and largedonation were not selected)"
+)
+
+# Random Forest
+# head(irs)
+irs$cheated<-factor(irs$cheated)
+RFM=randomForest(cheated~.,data=irs, importance=TRUE)
+importance(RFM)
+varImpPlot(RFM)
+# (Note, there is no need to recode the data into dummy variables for random forests)
+cat("Importance using accuracy is given in the first graph; importance using the Gini criterion is given in the second—either could be used to determine which variables are most useful for building a model
+
+In this case, there is a clear drop-off for largedonation, mathErrors, and dependents, indicating they should not be used.")
+
+# Dummy code categorical predictor variables
+irsdum <- model.matrix(~., irs)[,-1]
+irsdum<-data.frame(irsdum)
+#head(irsdum)
+#lasso regression
+#install.packages("gamlr")
+library(gamlr)
+modMat<-model.matrix(~marriedyes + dependentsyes + incomeOver100Kyes +
+returnyes + largedonationyes + mathErrorsyes + filedLateyes +
+Over4DeductClaimedyes, data=irsdum)
+fit<-gamlr(x=modMat,y=irsdum$cheatedyes, family = "binomial")
+plot(fit)
+coef(fit)
+
+# Note these variables are all on the same scale, so no standardization is needed.
+# However, dummy variables will again need to be created for the lasso technique
+
+cat("
+    10 x 1 sparse Matrix of class dgCMatrix
+                           seg99
+intercept             -2.5741270
+(Intercept)            .        
+marriedyes            -3.6222103
+dependentsyes          .        
+incomeOver100Kyes      4.1429629
+returnyes             -4.7533481
+largedonationyes      -0.1616757
+mathErrorsyes          .        
+filedLateyes           4.2112906
+Over4DeductClaimedyes  4.0355239
+
+Only dependents and mathErrors were removed; however, largedonation departed from zero late in the process and may not be needed; in this case both stepwise and random forests can help clarify whether to include largedonations as a predictor
+
+# Summary example 2
+• All three methods of variable selection agreed that dependents and
+mathErrors should not be used in the model
+• Stepwise and Random Forests indicated largedonation should also be
+removed
+• Further, largedonation was selected late in the regularization path
+from the Lasso
+• The final model selected would likely not use these three columns
+and instead be based on married, incomeOver100K, return, filedLate,
+and Over4DeductClaimedyes (these were the variables you used to
+build your ANN in week 8)
+")
+```
+
 
 # P-VALUE REJECTION
 ```{r P-VALUE REJECTION, echo=TRUE, message=TRUE, warning=TRUE, paged.print=TRUE}
