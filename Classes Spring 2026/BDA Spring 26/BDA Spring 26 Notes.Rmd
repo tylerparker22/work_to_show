@@ -1258,6 +1258,7 @@ cat(
 
 # Random Forest
 library(randomForest)
+ps$Sales<-factor(ps$Sales)
 RFM=randomForest(Sales~.,data=ps, importance=TRUE)
 importance(RFM)
 varImpPlot(RFM)
@@ -1306,7 +1307,7 @@ Warranty should not be used in the model
 the selected columns: Size, Features, Reliability, and Cost"
 )
 ```
-# Example 2
+Example 2
 The file “irs2.csv” contains data from past US Internal Revenue Service audits. In an effort to more efficiently audit only those returns most likely to have violated tax laws, the columns in the file irs2.csv are:
 
 • cheated: "yes" if the audit found the return violated tax laws, otherwise "no" -- this is the target
@@ -1426,7 +1427,167 @@ and Over4DeductClaimedyes (these were the variables you used to
 build your ANN in week 8)
 ")
 ```
+Homework
+```{r}
+nfl <- read.csv("C:/Users/tyler/OneDrive/Documents/GitHub/work_to_show/Classes Spring 2026/BDA Spring 26/Datasets/nflcombine2021.csv")
 
+# step wise
+#install.packages("MASS")
+library(MASS)
+step_model <- stepAIC(lm(Draftedyes ~ ., data = nfl, family=binomial), direction = "both", trace = FALSE)
+# Print the selected variables
+print(step_model$anova)
+
+# random forest
+library(randomForest)
+nfl$Draftedyes <-factor(nfl$Draftedyes)
+RFM=randomForest(Draftedyes ~.,data=nfl, importance=TRUE)
+importance(RFM)
+varImpPlot(RFM)
+           
+znfl <- read.csv("C:/Users/tyler/OneDrive/Documents/GitHub/work_to_show/Classes Spring 2026/BDA Spring 26/Datasets/znflcombine2021.csv")
+
+#lasso regression
+#install.packages("gamlr")
+library(gamlr)
+modMat<-model.matrix(~ Ht + Wt + yd40 + Vertical + Bench + BroadJump +
+Cone3 + Shuttle, data=znfl)
+fit<-gamlr(x=modMat,y=znfl$Draftedyes, family = "binomial")
+#the plot shows the coeff moving from zero to values
+plot(fit)
+#selected model
+coef(fit)
+
+cat(
+  "
+  All methods agree Wt and yd40 are the most important variables to predict if a player is likely to be drafted—these
+should definitely be included in a final model. Beyond that, there is no clear consensus and several factors could be
+included or left out. In this case, I would probably side with LASSO and use all factors.
+  ")
+```
+
+# association analysis
+```{r}
+survey <- read.csv("C:/Users/tyler/OneDrive/Documents/GitHub/work_to_show/Classes Spring 2026/BDA Spring 26/Datasets/survey.csv")
+head(survey)
+colnames(survey)
+
+# install.packages("arules") #run only once
+library("arules")
+
+#identify transactions
+transactions <- as(split(survey$Answer, survey$Stdnt_Nbr),"transactions") # specifies how data will be read in
+
+# use the apriori algorithm for association analysis
+# specify the minimum support and minimum confidence
+# maxlen=2 tells R to only consider pairwise associations
+rules<-apriori(transactions,
+               parameter=
+                 list(support=0.02,confidence=0.1,maxlen=2) # thresholds
+)
+
+#include the odds ratio, use the Haldane-Anscombe correction, sort by odds ratio
+ci <- confint(rules, "oddsRatio", smoothCounts = .5)
+
+quality(rules) <- cbind(
+  quality(rules),
+  oddsRatio = interestMeasure(rules, "oddsRatio", smoothCounts = .5),
+  oddsRatio = ci)
+
+rules <- sort(rules, by = "oddsRatio")
+inspect(rules)
+
+# Convert rules to a data frame and export to CSV
+rules_df <- as(rules, "data.frame")
+
+# Also add LHS and RHS as separate columns for readability
+rules_df$lhs <- labels(lhs(rules))
+rules_df$rhs <- labels(rhs(rules))
+
+write.csv(rules_df, "C:/Users/tyler/OneDrive/Documents/GitHub/work_to_show/Classes Spring 2026/BDA Spring 26/survey_rules.csv", row.names = FALSE)
+
+cat("Exported", nrow(rules_df), "rules to CSV.\n")
+```
+
+```{r}
+music <- read.csv("C:/Users/tyler/OneDrive/Documents/GitHub/work_to_show/Classes Spring 2026/BDA Spring 26/Datasets/music.csv")
+colnames(music)
+head(music)
+
+# Customers who added “TheShins” to their favorites list were 3.8 times more likely to add “VampireWeekend” to their favorites list.
+#install.packages("arules") #run only once
+library("arules")
+
+#identify transactions
+transactions <- as(split(music$artist, music$CustomerID),"transactions")
+
+#use the apriori algorithm for association analysis
+#specify the minimum support and minimum confidence
+#maxlen=2 tells R to only consider pairwise associations
+rules<-apriori(transactions,parameter=list(support=0.02,confidence=0.1,maxlen=2))
+
+#include the odds ratio, use the Haldane-Anscombe correction, sort by odds ratio
+ci <- confint(rules, "oddsRatio", smoothCounts = .5)
+quality(rules) <- cbind(
+quality(rules),
+oddsRatio = interestMeasure(rules, "oddsRatio", smoothCounts = .5),
+oddsRatio = ci)
+rules <- sort(rules, by = "oddsRatio")
+inspect(rules)
+
+# Convert rules to a data frame and export to CSV
+rules_df <- as(rules, "data.frame")
+
+# Also add LHS and RHS as separate columns for readability
+rules_df$lhs <- labels(lhs(rules))
+rules_df$rhs <- labels(rhs(rules))
+
+write.csv(rules_df, "C:/Users/tyler/OneDrive/Documents/GitHub/work_to_show/Classes Spring 2026/BDA Spring 26/music_rules.csv", row.names = FALSE)
+
+cat("Exported", nrow(rules_df), "rules to CSV.\n")
+```
+
+homework
+```{r}
+df <- read.csv("C:/Users/tyler/OneDrive/Documents/GitHub/work_to_show/Classes Spring 2026/BDA Spring 26/Datasets/mb.csv")
+colnames(df)
+head(df)
+
+#install.packages("arules") #run only once
+library("arules")
+#identify transactions
+# transactions <- as(split(df$y, df$x),"transactions")
+transactions <- as(split(df$itemtype, df$visitid),"transactions")
+
+#use the apriori algorithm for association analysis
+#specify the minimum support and minimum confidence
+#maxlen=2 tells R to only consider pairwise associations
+rules<-apriori(transactions,
+               parameter=
+                 list(support=0.02,confidence=0.1,maxlen=2)
+               )
+
+#include the odds ratio, use the Haldane-Anscombe correction, sort by odds ratio
+ci <- confint(rules, "oddsRatio", smoothCounts = .5)
+quality(rules) <- cbind(
+  quality(rules),
+  oddsRatio = interestMeasure(rules, "oddsRatio", smoothCounts = .5),
+  oddsRatio = ci)
+
+rules <- sort(rules, by = "oddsRatio")
+inspect(rules)
+
+# Convert rules to a data frame and export to CSV
+rules_df <- as(rules, "data.frame")
+
+# Also add LHS and RHS as separate columns for readability
+rules_df$lhs <- labels(lhs(rules))
+rules_df$rhs <- labels(rhs(rules))
+
+write.csv(rules_df, "C:/Users/tyler/OneDrive/Documents/GitHub/work_to_show/Classes Spring 2026/BDA Spring 26/mb_rules.csv", row.names = FALSE)
+
+cat("Exported", nrow(rules_df), "rules to CSV.\n")
+```
 
 # P-VALUE REJECTION
 ```{r P-VALUE REJECTION, echo=TRUE, message=TRUE, warning=TRUE, paged.print=TRUE}
