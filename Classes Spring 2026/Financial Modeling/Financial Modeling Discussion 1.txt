@@ -1,0 +1,49 @@
+Q1) Provide a brief introduction of yourself with your name, major, year, what interests you about this course, and what are your plans after finishing the degree?
+
+My name is Tyler Parker, my major is BDA, and I am a senior. What intrest me is how my degree impacts financial decisions in a company. My plan after college is to work at Walmart, helping them make good decisions. 
+
+Q2) Explain the concept of present value, net present value, and opportunity cost?
+Present value is the value that it is worth today. So you bought gas for $2.00 today, but tomorrow it is $1.50 today the demand was higher so it will be worth $2.00. 
+
+Net present Value is the present value plus the cost of acquiring the asset. You buy something that is worth $1,000 but you get a discount so you pay what the discount is. 
+
+Opportunity cost is how much it is worth at that time. 
+
+
+Q3) You are offered an asset costing $ 600 that has cash flows of $ 100 at the end of next 10 years?
+
+a) If the discount rate is 8%, find the NPV, should you purchase it?
+
+b) What is the IRR of the asset?
+
+
+
+Q4) What is the Gordon Formula?
+
+The Gordon formula values a stock by discounting its future anticipated dividends at the cost of equity rE.
+
+
+
+Q5) Why would a cash flow series have multiple IRRs?
+If the formula goes positive multipule times. It will reach a peak then come down. 
+
+
+Q6) The following cash flow pattern has two IRRs. Find these two IRRs and explain whether you would accept the project if the opportunity cost is 20%.
+
+
+
+Year                       Cash Flow
+
+0                               -500
+
+1                                600
+
+2                                300
+
+3                                300
+
+4                                200
+
+5                               -1000
+
+The two IRRs based on these cash flows would be 6.34% and 60.2%. Therefore, since the NPV is greater than 0, I would accept the project with an opportunity cost at 20%. 

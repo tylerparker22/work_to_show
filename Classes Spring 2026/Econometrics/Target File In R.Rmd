@@ -1,0 +1,37 @@
+---
+title: "Target File In R- Tyler Parker"
+output: html_notebook
+---
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Ctrl+Shift+Enter*. 
+
+```{r}
+# %% import dataset
+library(readxl)
+library(tidyverse)
+Target <- read_excel("C:/Users/tyler/OneDrive/Documents/GitHub/work_to_show/Classes Spring 2026/Econometrics/Data Sets/Target.xlsx")
+```
+## View the Data
+```{r}
+# head of the data
+head(Target)
+# View the data
+View(Target)
+```
+## Num of rows 
+```{r}
+# num of rows in data
+num_row <- nrow(Target)
+num_row
+
+# column names
+colnames(Target)
+```
+
+## linear model
+```{r}
+lm(PREGNANT ~ ., data=Target)
+```
+
